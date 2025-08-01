@@ -53,9 +53,6 @@ const Home = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
-              <BookOpen className="h-6 w-6 text-white" />
-            </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
                 Assalamu'alaykum, Penghafal Al-Qur'an!
