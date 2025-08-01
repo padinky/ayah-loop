@@ -159,7 +159,7 @@ export const AudioPlayer = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
-            Alhamdulillahi rabbil aamiin! You have completed memorizing the selected ayahs.
+            Alhamdulillah! You have completed memorizing the selected ayahs.
           </p>
           <Button onClick={handleRestart} className="w-full">
             <RotateCcw className="h-4 w-4 mr-2" />
