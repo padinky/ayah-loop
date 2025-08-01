@@ -112,6 +112,8 @@ export const AudioPlayer = () => {
           // Completely finished
           setIsPlaying(false);
           setIsCompleted(true);
+          // Scroll to top when session is completely finished
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       } else {
         // Reset current repeat counter when moving to next ayah
