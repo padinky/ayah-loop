@@ -58,7 +58,7 @@ const Home = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                Penghafal Al-Qur'an
+                Halo, Penghafal Al-Qur'an!
               </h1>
               <p className="text-muted-foreground">
                 Mulai perjalanan indah Anda menghafal Al-Qur'an
