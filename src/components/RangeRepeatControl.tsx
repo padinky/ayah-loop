@@ -16,7 +16,7 @@ export const RangeRepeatControl = () => {
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-primary">
           <RotateCcw className="h-5 w-5" />
-          Pengaturan Pengulangan Rentang
+          Kontrol Pengulangan Sesi
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
