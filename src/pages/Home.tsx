@@ -82,24 +82,16 @@ const Home = () => {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column */}
-          <div className="space-y-6">
-            <div className="order-1">
-              <SurahSelector onSurahSelect={handleSurahSelect} />
-            </div>
-            
-            {selectedSurah && (
-              <div className="order-3 lg:order-2">
-                <RangeRepeatControl />
-              </div>
-            )}
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8">
+          {/* SurahSelector - Always first */}
+          <div className="order-1 lg:order-1">
+            <SurahSelector onSurahSelect={handleSurahSelect} />
           </div>
 
-          {/* Right Column */}
-          <div className="space-y-6">
-            {loading ? (
-              <div className="order-2 lg:order-1">
+          {/* AyahSelector - Second on mobile, but in right column on desktop */}
+          <div className="order-2 lg:order-3 lg:row-start-1 lg:row-end-3">
+            <div className="space-y-6">
+              {loading ? (
                 <Card className="shadow-peaceful">
                   <CardContent className="p-8">
                     <div className="flex flex-col items-center gap-4">
@@ -108,17 +100,20 @@ const Home = () => {
                     </div>
                   </CardContent>
                 </Card>
-              </div>
-            ) : (
-              <div className="order-2 lg:order-1">
+              ) : (
                 <AyahSelector />
-              </div>
-            )}
-            
-            <div className="order-4 lg:order-2">
+              )}
+              
               <StartButton />
             </div>
           </div>
+
+          {/* RangeRepeatControl - Third on mobile, but in left column on desktop */}
+          {selectedSurah && (
+            <div className="order-3 lg:order-2">
+              <RangeRepeatControl />
+            </div>
+          )}
         </div>
       </div>
     </div>
