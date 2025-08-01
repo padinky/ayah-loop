@@ -20,7 +20,12 @@ const Home = () => {
   }, [resetMemorization]);
 
   const handleSurahSelect = async (surah: any) => {
+    // Reset selections when changing surah
     useQuranStore.getState().setSelectedSurah(surah);
+    useQuranStore.setState({ 
+      selectedAyahs: [], 
+      repeatConfig: { ayahs: {}, range: 1 } 
+    });
     setLoading(true);
     
     try {
