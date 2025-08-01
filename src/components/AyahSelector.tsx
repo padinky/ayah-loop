@@ -85,9 +85,9 @@ export const AyahSelector = () => {
         </div>
 
         {/* Add New Ayah Section */}
-        <div className="flex gap-2">
+        <div className="space-y-3">
           <Select value={selectedAyahToAdd} onValueChange={setSelectedAyahToAdd}>
-            <SelectTrigger className="flex-1">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Pilih ayat untuk ditambahkan..." />
             </SelectTrigger>
             <SelectContent className="max-h-60">
@@ -101,7 +101,7 @@ export const AyahSelector = () => {
           <Button 
             onClick={handleAddAyah} 
             disabled={!selectedAyahToAdd}
-            className="shrink-0"
+            className="w-full"
           >
             <Plus className="h-4 w-4 mr-1" />
             Tambah
