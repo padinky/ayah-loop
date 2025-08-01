@@ -14,6 +14,7 @@ export const AyahSelector = () => {
     selectedAyahs, 
     repeatConfig, 
     toggleAyahSelection, 
+    selectAllAyahs,
     setAyahRepeat 
   } = useQuranStore();
   
@@ -70,6 +71,19 @@ export const AyahSelector = () => {
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Select All Button */}
+        <div className="flex justify-end">
+          <Button 
+            onClick={selectAllAyahs}
+            variant="outline" 
+            className="shrink-0"
+            disabled={selectedAyahs.length === ayahs.length}
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Select All Ayahs
+          </Button>
+        </div>
+
         {/* Add New Ayah Section */}
         <div className="flex gap-2">
           <Select value={selectedAyahToAdd} onValueChange={setSelectedAyahToAdd}>

@@ -35,6 +35,7 @@ export interface QuranState {
   setSelectedSurah: (surah: Surah) => void;
   setAyahs: (ayahs: Ayah[]) => void;
   toggleAyahSelection: (ayahNumber: number) => void;
+  selectAllAyahs: () => void;
   setAyahRepeat: (ayahNumber: number, count: number) => void;
   setRangeRepeat: (count: number) => void;
   setCurrentAyah: (ayahNumber: number | null) => void;
@@ -68,6 +69,24 @@ export const useQuranStore = create<QuranState>((set) => ({
         ? state.selectedAyahs.filter(num => num !== ayahNumber)
         : [...state.selectedAyahs, ayahNumber].sort((a, b) => a - b)
     })),
+    
+  selectAllAyahs: () =>
+    set((state) => {
+      const allAyahNumbers = state.ayahs.map(ayah => ayah.numberInSurah);
+      const newRepeatConfig = { ...state.repeatConfig };
+      
+      // Set repeat count to 1 for each ayah if not already set
+      allAyahNumbers.forEach(ayahNumber => {
+        if (!newRepeatConfig.ayahs[ayahNumber]) {
+          newRepeatConfig.ayahs[ayahNumber] = 1;
+        }
+      });
+      
+      return {
+        selectedAyahs: allAyahNumbers,
+        repeatConfig: newRepeatConfig
+      };
+    }),
     
   setAyahRepeat: (ayahNumber, count) =>
     set((state) => ({
