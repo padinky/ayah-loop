@@ -18,7 +18,8 @@ const Memorize = () => {
     selectedAyahs, 
     currentAyah, 
     isPlaying, 
-    repeatConfig 
+    repeatConfig,
+    currentRepeat
   } = useQuranStore();
 
   useEffect(() => {
@@ -114,6 +115,7 @@ const Memorize = () => {
                           ayah={ayah}
                           isActive={isActive}
                           isPlaying={isActive && isPlaying}
+                          currentRepeat={isActive ? currentRepeat : 0}
                           totalRepeats={ayahRepeats}
                         />
                       );
