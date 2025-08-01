@@ -74,7 +74,6 @@ const About = () => {
                 <li>Mengatur jumlah pengulangan untuk setiap ayat</li>
                 <li>Mengatur pengulangan untuk seluruh sesi hafalan</li>
                 <li>Mendengarkan audio recitasi berkualitas tinggi</li>
-                <li>Melacak progress hafalan secara real-time</li>
               </ul>
             </CardContent>
           </Card>
