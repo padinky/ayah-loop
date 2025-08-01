@@ -19,6 +19,7 @@ export const AyahSelector = () => {
   } = useQuranStore();
   
   const [selectedAyahToAdd, setSelectedAyahToAdd] = useState<string>("");
+  const [tempRepeatValues, setTempRepeatValues] = useState<{[key: number]: string}>({});
 
   if (ayahs.length === 0) {
     return (
@@ -114,8 +115,9 @@ export const AyahSelector = () => {
             <Label className="text-sm font-medium">Ayat Terpilih ({selectedAyahs.length})</Label>
             <ScrollArea className="w-full" style={{ height: '700px' }}>
               <div className="space-y-3 pr-3">
-                {selectedAyahs.map((ayahNumber) => {
-                  const repeatCount = repeatConfig.ayahs[ayahNumber] || 1;
+                 {selectedAyahs.map((ayahNumber) => {
+                   const repeatCount = repeatConfig.ayahs[ayahNumber] || 1;
+                   const displayValue = tempRepeatValues[ayahNumber] !== undefined ? tempRepeatValues[ayahNumber] : repeatCount.toString();
                   
                   return (
                     <div 
@@ -155,11 +157,25 @@ export const AyahSelector = () => {
                               type="number"
                               min="1"
                               max="100"
-                              value={repeatCount}
-                              onChange={(e) => setAyahRepeat(
-                                ayahNumber, 
-                                parseInt(e.target.value) || 1
-                              )}
+                              value={displayValue}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                setTempRepeatValues(prev => ({
+                                  ...prev,
+                                  [ayahNumber]: value
+                                }));
+                              }}
+                              onBlur={(e) => {
+                                const value = e.target.value;
+                                const numValue = parseInt(value);
+                                const finalValue = isNaN(numValue) || numValue < 1 ? 1 : numValue;
+                                setAyahRepeat(ayahNumber, finalValue);
+                                setTempRepeatValues(prev => {
+                                  const newTemp = { ...prev };
+                                  delete newTemp[ayahNumber];
+                                  return newTemp;
+                                });
+                              }}
                               className="w-20 h-8"
                             />
                             <span className="text-sm text-muted-foreground">kali</span>
