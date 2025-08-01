@@ -187,7 +187,7 @@ export const AudioPlayer = () => {
             </span>
             <div className="flex gap-2">
               <Badge variant="outline">
-                Rentang: {rangeRepeat + 1}/{repeatConfig.range}
+                Sesi: {rangeRepeat + 1}/{repeatConfig.range}
               </Badge>
               {currentAyahData && (
                 <Badge variant="outline">
