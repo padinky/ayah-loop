@@ -18,6 +18,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'arabic-quran': ['Amiri Quran', 'Scheherazade New', 'Noto Sans Arabic', 'serif'],
+				'arabic-display': ['Scheherazade New', 'Amiri Quran', 'Noto Sans Arabic', 'serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

@@ -142,14 +142,20 @@ All colors MUST be HSL.
     font-feature-settings: "kern", "liga", "clig", "calt";
   }
 
-  /* Arabic text styling */
+  /* Arabic text styling - Enhanced for Quranic text */
   .arabic-text {
-    font-family: 'Noto Sans Arabic', 'Amiri', 'Scheherazade New', serif;
+    font-family: 'Amiri Quran', 'Scheherazade New', 'Noto Sans Arabic', serif;
     font-size: 1.5rem;
-    line-height: 2.2;
+    line-height: 2.4;
     text-align: right;
     direction: rtl;
     color: hsl(var(--quran-text));
+    font-feature-settings: "liga" 1, "dlig" 1, "calt" 1, "kern" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: 0.015em;
+    word-spacing: 0.1em;
   }
 
   .translation-text {
