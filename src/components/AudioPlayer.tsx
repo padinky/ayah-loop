@@ -200,16 +200,7 @@ export const AudioPlayer = () => {
       </CardHeader>
       
       <CardContent className="space-y-4">
-        <div className="flex items-center justify-center gap-4">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={moveToPreviousAyah}
-            disabled={currentAyahIndex === 0}
-          >
-            <SkipBack className="h-4 w-4" />
-          </Button>
-          
+        <div className="flex items-center justify-center">
           {isPlaying ? (
             <Button
               size="lg"
@@ -228,15 +219,6 @@ export const AudioPlayer = () => {
               <Play className="h-5 w-5 ml-1" />
             </Button>
           )}
-          
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => moveToNextAyah()}
-            disabled={currentAyahIndex === selectedAyahsData.length - 1}
-          >
-            <SkipForward className="h-4 w-4" />
-          </Button>
         </div>
 
         <audio
