@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuranStore } from "../store/quranStore";
 import { quranApi } from "../services/quranApi";
 import { SurahSelector } from "../components/SurahSelector";
@@ -7,10 +8,12 @@ import { RangeRepeatControl } from "../components/RangeRepeatControl";
 import { StartButton } from "../components/StartButton";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BookOpen, Heart, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Home = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { selectedSurah, setAyahs, resetMemorization } = useQuranStore();
   const { toast } = useToast();
@@ -73,7 +76,18 @@ const Home = () => {
               </p>
             </div>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => navigate('/about')}
+              className="flex items-center gap-2"
+            >
+              <Info className="h-4 w-4" />
+              Tentang
+            </Button>
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* Welcome Card */}
