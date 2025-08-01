@@ -80,7 +80,7 @@ const Home = () => {
             <p className="text-muted-foreground leading-relaxed">
               Select a Surah, choose the ayahs you wish to memorize, set your repeat preferences, 
               and begin your spiritual journey with audio-guided memorization. 
-              May Allah make it easy for you. Ameen.
+              May Allah make it easy for you. Aamiin.
             </p>
           </CardContent>
         </Card>
