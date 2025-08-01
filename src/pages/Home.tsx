@@ -65,26 +65,26 @@ const Home = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-islamic-green-light/10 to-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+        <div className="flex items-center justify-between mb-8 gap-4">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
                 Assalamu'alaykum, Penghafal Al-Qur'an!
               </h1>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-sm sm:text-base">
                 Mulai perjalanan indah Anda menghafal Al-Qur'an
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => navigate('/about')}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3"
             >
               <Info className="h-4 w-4" />
-              Tentang
+              <span className="hidden sm:inline">Tentang</span>
             </Button>
             <ThemeToggle />
           </div>
