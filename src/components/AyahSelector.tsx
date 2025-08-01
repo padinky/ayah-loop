@@ -98,7 +98,7 @@ export const AyahSelector = () => {
         {selectedAyahs.length > 0 && (
           <div className="space-y-3">
             <Label className="text-sm font-medium">Selected Ayahs ({selectedAyahs.length})</Label>
-            <ScrollArea className="max-h-96 min-h-32">
+            <ScrollArea className="h-80 w-full">
               <div className="space-y-3 pr-3">
                 {selectedAyahs.map((ayahNumber) => {
                   const repeatCount = repeatConfig.ayahs[ayahNumber] || 1;
