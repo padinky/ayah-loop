@@ -7,7 +7,7 @@ import { RotateCcw, Info } from "lucide-react";
 
 export const RangeRepeatControl = () => {
   const { repeatConfig, setRangeRepeat, selectedSurah } = useQuranStore();
-  const [tempRangeValue, setTempRangeValue] = useState<string>("");
+  const [tempRangeValue, setTempRangeValue] = useState<string | null>(null);
 
   if (!selectedSurah) {
     return null;
@@ -39,7 +39,7 @@ export const RangeRepeatControl = () => {
             type="number"
             min="1"
             max="100"
-            value={tempRangeValue !== "" ? tempRangeValue : repeatConfig.range.toString()}
+            value={tempRangeValue !== null ? tempRangeValue : repeatConfig.range.toString()}
             onChange={(e) => {
               setTempRangeValue(e.target.value);
             }}
@@ -48,7 +48,7 @@ export const RangeRepeatControl = () => {
               const numValue = parseInt(value);
               const finalValue = isNaN(numValue) || numValue < 1 ? 1 : numValue;
               setRangeRepeat(finalValue);
-              setTempRangeValue("");
+              setTempRangeValue(null);
             }}
             className="w-24 h-10"
           />
