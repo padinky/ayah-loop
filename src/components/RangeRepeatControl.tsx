@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuranStore } from "../store/quranStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import { RotateCcw, Info } from "lucide-react";
 
 export const RangeRepeatControl = () => {
   const { repeatConfig, setRangeRepeat, selectedSurah } = useQuranStore();
+  const [tempRangeValue, setTempRangeValue] = useState<string>("");
 
   if (!selectedSurah) {
     return null;
@@ -37,8 +39,17 @@ export const RangeRepeatControl = () => {
             type="number"
             min="1"
             max="100"
-            value={repeatConfig.range}
-            onChange={(e) => setRangeRepeat(parseInt(e.target.value) || 1)}
+            value={tempRangeValue !== "" ? tempRangeValue : repeatConfig.range.toString()}
+            onChange={(e) => {
+              setTempRangeValue(e.target.value);
+            }}
+            onBlur={(e) => {
+              const value = e.target.value;
+              const numValue = parseInt(value);
+              const finalValue = isNaN(numValue) || numValue < 1 ? 1 : numValue;
+              setRangeRepeat(finalValue);
+              setTempRangeValue("");
+            }}
             className="w-24 h-10"
           />
           <span className="text-sm text-muted-foreground">kali</span>
