@@ -43,6 +43,17 @@ export const AudioPlayer = () => {
     if (selectedAyahsData.length > 0 && currentAyah === null) {
       setCurrentAyah(selectedAyahsData[0].numberInSurah);
       setCurrentAyahIndex(0);
+      // Auto-start playing when component first loads
+      setTimeout(() => {
+        if (audioRef.current && selectedAyahsData[0]?.audio) {
+          audioRef.current.src = selectedAyahsData[0].audio;
+          audioRef.current.play().then(() => {
+            setIsPlaying(true);
+          }).catch((error) => {
+            console.log("Auto-play prevented by browser:", error);
+          });
+        }
+      }, 500);
     }
   }, [selectedAyahsData, currentAyah, setCurrentAyah]);
 
