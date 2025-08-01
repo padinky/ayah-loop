@@ -48,7 +48,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-islamic-green-light/10 to-background pb-32 md:pb-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-islamic-green-light/10 to-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -109,20 +109,7 @@ const Home = () => {
             ) : (
               <AyahSelector />
             )}
-          </div>
-        </div>
-      </div>
-
-      {/* Sticky Start Button - Mobile First */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background via-background/95 to-transparent backdrop-blur-sm border-t md:hidden">
-        <StartButton />
-      </div>
-
-      {/* Desktop Start Button */}
-      <div className="hidden md:block container mx-auto px-4 max-w-4xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div></div>
-          <div>
+            
             <StartButton />
           </div>
         </div>
