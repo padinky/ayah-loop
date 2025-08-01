@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useQuranStore } from "../store/quranStore";
 import { quranApi } from "../services/quranApi";
 import { SurahSelector } from "../components/SurahSelector";
@@ -14,6 +14,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const { selectedSurah, setAyahs, resetMemorization } = useQuranStore();
   const { toast } = useToast();
+  const rangeRepeatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     resetMemorization();
@@ -35,6 +36,16 @@ const Home = () => {
         title: "Surah Berhasil Dimuat",
         description: `${surah.englishName} dengan ${ayahsData.length} ayat siap untuk dipilih.`,
       });
+      
+      // Scroll to range repeat section on mobile
+      setTimeout(() => {
+        if (window.innerWidth < 1024 && rangeRepeatRef.current) {
+          rangeRepeatRef.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+          });
+        }
+      }, 100);
     } catch (error) {
       console.error('Error loading surah:', error);
       toast({
@@ -88,7 +99,9 @@ const Home = () => {
             <SurahSelector onSurahSelect={handleSurahSelect} />
             
             {selectedSurah && (
-              <RangeRepeatControl />
+              <div ref={rangeRepeatRef}>
+                <RangeRepeatControl />
+              </div>
             )}
           </div>
 

@@ -5,9 +5,9 @@ import { Label } from "@/components/ui/label";
 import { RotateCcw, Info } from "lucide-react";
 
 export const RangeRepeatControl = () => {
-  const { repeatConfig, setRangeRepeat, selectedAyahs } = useQuranStore();
+  const { repeatConfig, setRangeRepeat, selectedSurah } = useQuranStore();
 
-  if (selectedAyahs.length === 0) {
+  if (!selectedSurah) {
     return null;
   }
 
