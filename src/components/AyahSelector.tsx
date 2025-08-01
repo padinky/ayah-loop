@@ -67,7 +67,7 @@ export const AyahSelector = () => {
           Pilih Ayat untuk Dihafal
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Tambahkan ayat satu per satu dan atur berapa kali setiap ayat harus diulang
+          Tambahkan ayat satu per satu dan atur berapa kali setiap ayat harus diulang. Setelah selesai, scroll ke bawah dan klik "Mulai Hafalan"
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
