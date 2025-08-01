@@ -1,0 +1,104 @@
+import { create } from 'zustand';
+
+export interface Surah {
+  number: number;
+  name: string;
+  englishName: string;
+  englishNameTranslation: string;
+  numberOfAyahs: number;
+  revelationType: string;
+}
+
+export interface Ayah {
+  number: number;
+  numberInSurah: number;
+  text: string;
+  translation?: string;
+  audio?: string;
+}
+
+export interface RepeatConfig {
+  ayahs: Record<string, number>;
+  range: number;
+}
+
+export interface QuranState {
+  selectedSurah: Surah | null;
+  ayahs: Ayah[];
+  selectedAyahs: number[];
+  repeatConfig: RepeatConfig;
+  currentAyah: number | null;
+  isPlaying: boolean;
+  currentRepeat: number;
+  rangeRepeat: number;
+  
+  setSelectedSurah: (surah: Surah) => void;
+  setAyahs: (ayahs: Ayah[]) => void;
+  toggleAyahSelection: (ayahNumber: number) => void;
+  setAyahRepeat: (ayahNumber: number, count: number) => void;
+  setRangeRepeat: (count: number) => void;
+  setCurrentAyah: (ayahNumber: number | null) => void;
+  setIsPlaying: (playing: boolean) => void;
+  incrementCurrentRepeat: () => void;
+  incrementRangeRepeat: () => void;
+  resetMemorization: () => void;
+}
+
+export const useQuranStore = create<QuranState>((set) => ({
+  selectedSurah: null,
+  ayahs: [],
+  selectedAyahs: [],
+  repeatConfig: {
+    ayahs: {},
+    range: 1
+  },
+  currentAyah: null,
+  isPlaying: false,
+  currentRepeat: 0,
+  rangeRepeat: 0,
+
+  setSelectedSurah: (surah) => set({ selectedSurah: surah }),
+  
+  setAyahs: (ayahs) => set({ ayahs }),
+  
+  toggleAyahSelection: (ayahNumber) => 
+    set((state) => ({
+      selectedAyahs: state.selectedAyahs.includes(ayahNumber)
+        ? state.selectedAyahs.filter(num => num !== ayahNumber)
+        : [...state.selectedAyahs, ayahNumber].sort((a, b) => a - b)
+    })),
+    
+  setAyahRepeat: (ayahNumber, count) =>
+    set((state) => ({
+      repeatConfig: {
+        ...state.repeatConfig,
+        ayahs: {
+          ...state.repeatConfig.ayahs,
+          [ayahNumber]: count
+        }
+      }
+    })),
+    
+  setRangeRepeat: (count) =>
+    set((state) => ({
+      repeatConfig: {
+        ...state.repeatConfig,
+        range: count
+      }
+    })),
+    
+  setCurrentAyah: (ayahNumber) => set({ currentAyah: ayahNumber }),
+  
+  setIsPlaying: (playing) => set({ isPlaying: playing }),
+  
+  incrementCurrentRepeat: () => set((state) => ({ currentRepeat: state.currentRepeat + 1 })),
+  
+  incrementRangeRepeat: () => set((state) => ({ rangeRepeat: state.rangeRepeat + 1 })),
+  
+  resetMemorization: () => set({ 
+    currentAyah: null, 
+    isPlaying: false, 
+    currentRepeat: 0, 
+    rangeRepeat: 0 
+  })
+}));

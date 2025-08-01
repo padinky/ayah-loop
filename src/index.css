@@ -8,33 +8,53 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Islamic-inspired color palette */
+    --background: 45 20% 97%;
+    --foreground: 160 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 160 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 160 15% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Traditional Islamic green */
+    --primary: 145 85% 25%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 145 70% 35%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Golden accent colors */
+    --secondary: 45 90% 85%;
+    --secondary-foreground: 160 15% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 45 30% 92%;
+    --muted-foreground: 160 10% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 42 95% 70%;
+    --accent-foreground: 160 25% 15%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 145 25% 85%;
+    --input: 145 25% 90%;
+    --ring: 145 85% 25%;
+
+    /* Islamic theme specific colors */
+    --islamic-gold: 42 95% 70%;
+    --islamic-green: 145 85% 25%;
+    --islamic-green-light: 145 50% 85%;
+    --quran-text: 160 25% 12%;
+    --translation-text: 160 15% 35%;
+
+    /* Gradients for beautiful backgrounds */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-peaceful: linear-gradient(180deg, hsl(var(--background)), hsl(var(--islamic-green-light)));
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(var(--muted)));
+
+    /* Shadows for depth */
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.2);
+    --shadow-peaceful: 0 4px 20px -5px hsl(var(--islamic-green) / 0.15);
 
     --radius: 0.5rem;
 
@@ -56,33 +76,51 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode with Islamic theme */
+    --background: 160 25% 8%;
+    --foreground: 45 15% 90%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 160 20% 12%;
+    --card-foreground: 45 15% 90%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 160 20% 12%;
+    --popover-foreground: 45 15% 90%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 145 70% 60%;
+    --primary-foreground: 160 25% 8%;
+    --primary-glow: 145 80% 45%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 160 15% 20%;
+    --secondary-foreground: 45 15% 90%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 160 15% 18%;
+    --muted-foreground: 160 10% 60%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 42 85% 65%;
+    --accent-foreground: 160 25% 8%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 160 20% 20%;
+    --input: 160 20% 18%;
+    --ring: 145 70% 60%;
+
+    /* Dark mode Islamic colors */
+    --islamic-gold: 42 85% 65%;
+    --islamic-green: 145 70% 60%;
+    --islamic-green-light: 145 40% 25%;
+    --quran-text: 45 20% 85%;
+    --translation-text: 45 15% 70%;
+
+    /* Dark mode gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-peaceful: linear-gradient(180deg, hsl(var(--background)), hsl(var(--islamic-green-light)));
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(var(--muted)));
+
+    /* Dark mode shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.3);
+    --shadow-peaceful: 0 4px 20px -5px hsl(var(--islamic-green) / 0.25);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -100,6 +138,53 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "kern", "liga", "clig", "calt";
+  }
+
+  /* Arabic text styling */
+  .arabic-text {
+    font-family: 'Noto Sans Arabic', 'Amiri', 'Scheherazade New', serif;
+    font-size: 1.5rem;
+    line-height: 2.2;
+    text-align: right;
+    direction: rtl;
+    color: hsl(var(--quran-text));
+  }
+
+  .translation-text {
+    color: hsl(var(--translation-text));
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Beautiful animations */
+  .fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Smooth transitions */
+  .smooth-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
