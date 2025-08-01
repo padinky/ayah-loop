@@ -70,7 +70,6 @@ export const AudioPlayer = () => {
       const nextIndex = currentAyahIndex + 1;
       setCurrentAyahIndex(nextIndex);
       setCurrentAyah(selectedAyahsData[nextIndex].numberInSurah);
-      resetCurrentRepeat(); // Reset only current repeat counter when moving to next ayah
       return true;
     }
     return false;
@@ -115,6 +114,8 @@ export const AudioPlayer = () => {
           setIsCompleted(true);
         }
       } else {
+        // Reset current repeat counter when moving to next ayah
+        resetCurrentRepeat();
         // Auto-play next ayah
         setTimeout(() => {
           if (audioRef.current && selectedAyahsData[currentAyahIndex + 1]?.audio) {
