@@ -58,7 +58,7 @@ export const StartButton = () => {
             <p><strong>Surah:</strong> {selectedSurah.englishName}</p>
             <p><strong>Ayat Terpilih:</strong> {totalAyahs} ayat</p>
             <p><strong>Pengulangan individual:</strong> {totalIndividualRepeats} total putar</p>
-            <p><strong>Pengulangan rentang:</strong> {totalRangeRepeats} kali</p>
+            <p><strong>Pengulangan sesi:</strong> {totalRangeRepeats} kali</p>
           </div>
         </div>
         
