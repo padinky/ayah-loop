@@ -27,7 +27,8 @@ export const AudioPlayer = () => {
     setIsPlaying,
     incrementCurrentRepeat,
     incrementRangeRepeat,
-    resetMemorization
+    resetMemorization,
+    resetCurrentRepeat
   } = useQuranStore();
 
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -69,7 +70,7 @@ export const AudioPlayer = () => {
       const nextIndex = currentAyahIndex + 1;
       setCurrentAyahIndex(nextIndex);
       setCurrentAyah(selectedAyahsData[nextIndex].numberInSurah);
-      incrementCurrentRepeat();
+      resetCurrentRepeat(); // Reset only current repeat counter when moving to next ayah
       return true;
     }
     return false;
@@ -101,6 +102,7 @@ export const AudioPlayer = () => {
           incrementRangeRepeat();
           setCurrentAyahIndex(0);
           setCurrentAyah(selectedAyahsData[0].numberInSurah);
+          resetCurrentRepeat(); // Reset only current repeat counter when starting new range
           setTimeout(() => {
             if (audioRef.current && selectedAyahsData[0]?.audio) {
               audioRef.current.src = selectedAyahsData[0].audio;

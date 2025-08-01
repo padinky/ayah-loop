@@ -42,6 +42,7 @@ export interface QuranState {
   incrementCurrentRepeat: () => void;
   incrementRangeRepeat: () => void;
   resetMemorization: () => void;
+  resetCurrentRepeat: () => void;
 }
 
 export const useQuranStore = create<QuranState>((set) => ({
@@ -100,5 +101,7 @@ export const useQuranStore = create<QuranState>((set) => ({
     isPlaying: false, 
     currentRepeat: 0, 
     rangeRepeat: 0 
-  })
+  }),
+  
+  resetCurrentRepeat: () => set({ currentRepeat: 0 })
 }));
