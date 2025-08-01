@@ -22,7 +22,7 @@ export const StartButton = () => {
         <CardContent className="p-6">
           <div className="flex items-center gap-3 text-muted-foreground">
             <AlertCircle className="h-5 w-5" />
-            <span>Please select a Surah first</span>
+            <span>Silakan pilih Surah terlebih dahulu</span>
           </div>
         </CardContent>
       </Card>
@@ -35,7 +35,7 @@ export const StartButton = () => {
         <CardContent className="p-6">
           <div className="flex items-center gap-3 text-muted-foreground">
             <AlertCircle className="h-5 w-5" />
-            <span>Please select at least one Ayah to memorize</span>
+            <span>Silakan pilih setidaknya satu Ayat untuk dihafal</span>
           </div>
         </CardContent>
       </Card>
@@ -53,12 +53,12 @@ export const StartButton = () => {
     <Card className="w-full shadow-peaceful">
       <CardContent className="p-6 space-y-4">
         <div className="space-y-2">
-          <h3 className="font-semibold text-primary">Ready to Start Memorization</h3>
+          <h3 className="font-semibold text-primary">Siap Memulai Hafalan</h3>
           <div className="space-y-1 text-sm text-muted-foreground">
             <p><strong>Surah:</strong> {selectedSurah.englishName}</p>
-            <p><strong>Selected Ayahs:</strong> {totalAyahs} ayah{totalAyahs !== 1 ? 's' : ''}</p>
-            <p><strong>Individual repeats:</strong> {totalIndividualRepeats} total plays</p>
-            <p><strong>Range repeats:</strong> {totalRangeRepeats} time{totalRangeRepeats !== 1 ? 's' : ''}</p>
+            <p><strong>Ayat Terpilih:</strong> {totalAyahs} ayat</p>
+            <p><strong>Pengulangan individual:</strong> {totalIndividualRepeats} total putar</p>
+            <p><strong>Pengulangan rentang:</strong> {totalRangeRepeats} kali</p>
           </div>
         </div>
         
@@ -68,7 +68,7 @@ export const StartButton = () => {
           disabled={!canStart}
         >
           <Play className="h-5 w-5 mr-2" />
-          Start Memorization
+          Mulai Hafalan
         </Button>
       </CardContent>
     </Card>

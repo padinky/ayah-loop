@@ -45,7 +45,7 @@ export const AyahDisplay = ({
             variant={isActive ? "default" : "secondary"}
             className="text-sm font-medium"
           >
-            Ayah {ayah.numberInSurah}
+            Ayat {ayah.numberInSurah}
           </Badge>
           
           {isActive && (
@@ -53,7 +53,7 @@ export const AyahDisplay = ({
               {isPlaying && (
                 <div className="flex items-center gap-1 text-primary">
                   <Volume2 className="h-4 w-4 animate-pulse" />
-                  <span className="text-sm font-medium">Playing</span>
+                  <span className="text-sm font-medium">Memutar</span>
                 </div>
               )}
               {totalRepeats > 1 && (

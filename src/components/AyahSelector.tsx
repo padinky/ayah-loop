@@ -25,7 +25,7 @@ export const AyahSelector = () => {
       <Card className="w-full">
         <CardContent className="p-6">
           <p className="text-muted-foreground text-center">
-            Please select a Surah first to choose Ayahs
+            Silakan pilih Surah terlebih dahulu untuk memilih Ayat
           </p>
         </CardContent>
       </Card>
@@ -64,10 +64,10 @@ export const AyahSelector = () => {
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-primary">
           <FileText className="h-5 w-5" />
-          Select Ayahs for Memorization
+          Pilih Ayat untuk Dihafal
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Add ayahs one by one and set how many times each should repeat
+          Tambahkan ayat satu per satu dan atur berapa kali setiap ayat harus diulang
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -80,7 +80,7 @@ export const AyahSelector = () => {
             disabled={selectedAyahs.length === ayahs.length}
           >
             <FileText className="h-4 w-4 mr-2" />
-            Select All Ayahs
+            Pilih Semua Ayat
           </Button>
         </div>
 
@@ -88,12 +88,12 @@ export const AyahSelector = () => {
         <div className="flex gap-2">
           <Select value={selectedAyahToAdd} onValueChange={setSelectedAyahToAdd}>
             <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Choose an ayah to add..." />
+              <SelectValue placeholder="Pilih ayat untuk ditambahkan..." />
             </SelectTrigger>
             <SelectContent className="max-h-60">
               {availableAyahs.map((ayah) => (
                 <SelectItem key={ayah.numberInSurah} value={ayah.numberInSurah.toString()}>
-                  Ayah {ayah.numberInSurah}
+                  Ayat {ayah.numberInSurah}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -104,14 +104,14 @@ export const AyahSelector = () => {
             className="shrink-0"
           >
             <Plus className="h-4 w-4 mr-1" />
-            Add
+            Tambah
           </Button>
         </div>
 
         {/* Selected Ayahs List */}
         {selectedAyahs.length > 0 && (
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Selected Ayahs ({selectedAyahs.length})</Label>
+            <Label className="text-sm font-medium">Ayat Terpilih ({selectedAyahs.length})</Label>
             <ScrollArea className="h-80 w-full">
               <div className="space-y-3 pr-3">
                 {selectedAyahs.map((ayahNumber) => {
@@ -126,7 +126,7 @@ export const AyahSelector = () => {
                         <div className="flex-1 space-y-2">
                           <div className="flex items-center justify-between">
                             <Label className="font-semibold">
-                              Ayah {ayahNumber}
+                              Ayat {ayahNumber}
                             </Label>
                             <Button
                               variant="ghost"
@@ -148,7 +148,7 @@ export const AyahSelector = () => {
                               htmlFor={`repeat-${ayahNumber}`}
                               className="text-sm font-medium"
                             >
-                              Repeat:
+                              Ulangi:
                             </Label>
                             <Input
                               id={`repeat-${ayahNumber}`}
@@ -162,7 +162,7 @@ export const AyahSelector = () => {
                               )}
                               className="w-20 h-8"
                             />
-                            <span className="text-sm text-muted-foreground">times</span>
+                            <span className="text-sm text-muted-foreground">kali</span>
                           </div>
                         </div>
                       </div>
@@ -177,8 +177,8 @@ export const AyahSelector = () => {
         {selectedAyahs.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
             <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>No ayahs selected yet</p>
-            <p className="text-sm">Use the dropdown above to add ayahs for memorization</p>
+            <p>Belum ada ayat yang dipilih</p>
+            <p className="text-sm">Gunakan dropdown di atas untuk menambah ayat yang akan dihafal</p>
           </div>
         )}
       </CardContent>

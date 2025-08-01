@@ -70,12 +70,12 @@ export const SurahSelector = ({ onSurahSelect }: SurahSelectorProps) => {
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-primary">
           <Book className="h-5 w-5" />
-          Select Surah
+          Pilih Surah
         </CardTitle>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search Surah..."
+            placeholder="Cari Surah..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -101,7 +101,7 @@ export const SurahSelector = ({ onSurahSelect }: SurahSelectorProps) => {
                       <span className="font-medium">{surah.englishName}</span>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {surah.englishNameTranslation} • {surah.numberOfAyahs} Ayahs
+                      {surah.englishNameTranslation} • {surah.numberOfAyahs} Ayat
                     </div>
                   </div>
                   <div className="arabic-text text-lg font-normal text-right">

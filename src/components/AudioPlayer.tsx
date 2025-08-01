@@ -141,7 +141,7 @@ export const AudioPlayer = () => {
       <Card className="w-full shadow-peaceful">
         <CardContent className="p-6">
           <p className="text-center text-muted-foreground">
-            No ayahs selected for memorization
+            Tidak ada ayat yang dipilih untuk dihafal
           </p>
         </CardContent>
       </Card>
@@ -154,16 +154,16 @@ export const AudioPlayer = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-primary">
             <CheckCircle className="h-5 w-5 text-islamic-gold" />
-            Memorization Complete!
+            Hafalan Selesai!
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
-            Alhamdulillah! You have completed memorizing the selected ayahs.
+            Alhamdulillah! Anda telah selesai menghafal ayat-ayat yang dipilih.
           </p>
           <Button onClick={handleRestart} className="w-full">
             <RotateCcw className="h-4 w-4 mr-2" />
-            Start Again
+            Mulai Lagi
           </Button>
         </CardContent>
       </Card>
@@ -178,20 +178,20 @@ export const AudioPlayer = () => {
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-primary">
           <Volume2 className="h-5 w-5" />
-          Audio Player
+          Pemutar Audio
         </CardTitle>
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">
-              Ayah {currentAyahIndex + 1} of {totalAyahs}
+              Ayat {currentAyahIndex + 1} dari {totalAyahs}
             </span>
             <div className="flex gap-2">
               <Badge variant="outline">
-                Range: {rangeRepeat + 1}/{repeatConfig.range}
+                Rentang: {rangeRepeat + 1}/{repeatConfig.range}
               </Badge>
               {currentAyahData && (
                 <Badge variant="outline">
-                  Repeat: {currentRepeat + 1}/{currentAyahRepeats}
+                  Ulangi: {currentRepeat + 1}/{currentAyahRepeats}
                 </Badge>
               )}
             </div>

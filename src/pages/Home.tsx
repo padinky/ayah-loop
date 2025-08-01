@@ -32,14 +32,14 @@ const Home = () => {
       const ayahsData = await quranApi.getCombinedSurahData(surah.number);
       setAyahs(ayahsData);
       toast({
-        title: "Surah Loaded Successfully",
-        description: `${surah.englishName} with ${ayahsData.length} ayahs is ready for selection.`,
+        title: "Surah Berhasil Dimuat",
+        description: `${surah.englishName} dengan ${ayahsData.length} ayat siap untuk dipilih.`,
       });
     } catch (error) {
       console.error('Error loading surah:', error);
       toast({
-        title: "Error Loading Surah",
-        description: "Failed to load ayahs. Please try again.",
+        title: "Gagal Memuat Surah",
+        description: "Gagal memuat ayat. Silakan coba lagi.",
         variant: "destructive",
       });
     } finally {
@@ -58,10 +58,10 @@ const Home = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                Quran Memorizer
+                Penghafal Al-Qur'an
               </h1>
               <p className="text-muted-foreground">
-                Begin your beautiful journey of memorizing the Holy Quran
+                Mulai perjalanan indah Anda menghafal Al-Qur'an
               </p>
             </div>
           </div>
@@ -73,14 +73,14 @@ const Home = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-primary">
               <Heart className="h-5 w-5 text-islamic-gold" />
-              Welcome to Your Memorization Journey
+              Selamat Datang di Perjalanan Menghafal Anda
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground leading-relaxed">
-              Select a Surah, choose the ayahs you wish to memorize, set your repeat preferences, 
-              and begin your spiritual journey with audio-guided memorization. 
-              May Allah make it easy for you. Aamiin.
+              Pilih surah, pilih ayat yang ingin Anda hafal, atur preferensi pengulangan, 
+              dan mulai perjalanan spiritual Anda dengan panduan hafalan audio. 
+              Semoga Allah mudahkan untuk Anda. Aamiin.
             </p>
           </CardContent>
         </Card>
@@ -102,7 +102,7 @@ const Home = () => {
                 <CardContent className="p-8">
                   <div className="flex flex-col items-center gap-4">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                    <p className="text-muted-foreground">Loading ayahs...</p>
+                    <p className="text-muted-foreground">Memuat ayat...</p>
                   </div>
                 </CardContent>
               </Card>

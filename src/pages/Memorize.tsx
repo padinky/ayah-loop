@@ -74,7 +74,7 @@ const Memorize = () => {
             <div className="flex items-center gap-2">
               <Target className="h-4 w-4 text-islamic-gold" />
               <Badge variant="outline">
-                {selectedAyahs.length} Ayah{selectedAyahs.length !== 1 ? 's' : ''}
+                {selectedAyahs.length} Ayat
               </Badge>
             </div>
             <ThemeToggle />
@@ -94,10 +94,10 @@ const Memorize = () => {
             <Card className="shadow-peaceful">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  <span className="text-primary">Ayahs for Memorization</span>
+                  <span className="text-primary">Ayat untuk Dihafal</span>
                   {currentAyahData && (
                     <Badge className="bg-gradient-to-r from-primary to-primary-glow">
-                      Currently: Ayah {currentAyahData.numberInSurah}
+                      Saat Ini: Ayat {currentAyahData.numberInSurah}
                     </Badge>
                   )}
                 </CardTitle>
@@ -130,8 +130,8 @@ const Memorize = () => {
         {/* Footer */}
         <div className="mt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            "And We have certainly made the Quran easy for remembrance, so is there any who will remember?" 
-            <span className="block mt-1 text-xs">— Quran 54:17</span>
+            "Dan sesungguhnya telah Kami mudahkan Al-Qur'an untuk pelajaran, maka adakah orang yang mengambil pelajaran?" 
+            <span className="block mt-1 text-xs">— Al-Qur'an 54:17</span>
           </p>
         </div>
       </div>
