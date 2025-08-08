@@ -44,7 +44,7 @@ const Memorize = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-islamic-green-light/10 to-background">
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
           <div className="flex items-center gap-4">
             <Button 
               variant="outline" 
@@ -70,7 +70,7 @@ const Memorize = () => {
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex w-full items-center justify-between gap-4 md:w-auto md:justify-end">
             <div className="flex items-center gap-2">
               <Target className="h-4 w-4 text-islamic-gold" />
               <Badge variant="outline">
