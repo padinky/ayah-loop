@@ -73,19 +73,17 @@ export const AyahSelector = () => {
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
-        {selectedSurah && (
-          <div className="flex items-center justify-between rounded-md border bg-muted/30 p-3">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm font-medium">Surah Terpilih</Label>
-              <span className="text-sm text-muted-foreground">
-                {selectedSurah.number}. {selectedSurah.englishName}
-              </span>
-            </div>
-            <div className="arabic-text text-base">{selectedSurah.name}</div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {selectedSurah && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">
+                  {selectedSurah.number}. {selectedSurah.englishName}
+                </span>
+                <span className="arabic-text text-base">{selectedSurah.name}</span>
+              </div>
+            )}
           </div>
-        )}
-        {/* Select All Button */}
-        <div className="flex justify-end">
           <Button 
             onClick={selectAllAyahs}
             variant="outline" 
