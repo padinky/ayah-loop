@@ -3,17 +3,8 @@ import { useQuranStore } from "../store/quranStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { 
-  Play, 
-  Pause, 
-  SkipForward, 
-  SkipBack, 
-  Volume2, 
-  RotateCcw,
-  CheckCircle 
-} from "lucide-react";
+import { Play, Pause, SkipForward, SkipBack, Volume2, RotateCcw, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
 export const AudioPlayer = () => {
   const {
     ayahs,
@@ -30,15 +21,10 @@ export const AudioPlayer = () => {
     resetMemorization,
     resetCurrentRepeat
   } = useQuranStore();
-
   const audioRef = useRef<HTMLAudioElement>(null);
   const [currentAyahIndex, setCurrentAyahIndex] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
-
-  const selectedAyahsData = ayahs.filter(ayah => 
-    selectedAyahs.includes(ayah.numberInSurah)
-  );
-
+  const selectedAyahsData = ayahs.filter(ayah => selectedAyahs.includes(ayah.numberInSurah));
   useEffect(() => {
     if (selectedAyahsData.length > 0 && currentAyah === null) {
       setCurrentAyah(selectedAyahsData[0].numberInSurah);
@@ -49,17 +35,15 @@ export const AudioPlayer = () => {
           audioRef.current.src = selectedAyahsData[0].audio;
           audioRef.current.play().then(() => {
             setIsPlaying(true);
-          }).catch((error) => {
+          }).catch(error => {
             console.log("Auto-play prevented by browser:", error);
           });
         }
       }, 500);
     }
   }, [selectedAyahsData, currentAyah, setCurrentAyah]);
-
   const currentAyahData = selectedAyahsData[currentAyahIndex];
-  const currentAyahRepeats = currentAyahData ? (repeatConfig.ayahs[currentAyahData.numberInSurah] || 1) : 1;
-
+  const currentAyahRepeats = currentAyahData ? repeatConfig.ayahs[currentAyahData.numberInSurah] || 1 : 1;
   const handlePlay = () => {
     if (audioRef.current && currentAyahData?.audio) {
       audioRef.current.src = currentAyahData.audio;
@@ -68,14 +52,12 @@ export const AudioPlayer = () => {
       setCurrentAyah(currentAyahData.numberInSurah);
     }
   };
-
   const handlePause = () => {
     if (audioRef.current) {
       audioRef.current.pause();
       setIsPlaying(false);
     }
   };
-
   const moveToNextAyah = () => {
     if (currentAyahIndex < selectedAyahsData.length - 1) {
       const nextIndex = currentAyahIndex + 1;
@@ -85,7 +67,6 @@ export const AudioPlayer = () => {
     }
     return false;
   };
-
   const moveToPreviousAyah = () => {
     if (currentAyahIndex > 0) {
       const prevIndex = currentAyahIndex - 1;
@@ -94,7 +75,6 @@ export const AudioPlayer = () => {
       incrementCurrentRepeat();
     }
   };
-
   const handleAudioEnd = () => {
     if (currentRepeat + 1 < currentAyahRepeats) {
       // Repeat current ayah
@@ -124,7 +104,10 @@ export const AudioPlayer = () => {
           setIsPlaying(false);
           setIsCompleted(true);
           // Scroll to top when session is completely finished
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
         }
       } else {
         // Reset current repeat counter when moving to next ayah
@@ -139,7 +122,6 @@ export const AudioPlayer = () => {
       }
     }
   };
-
   const handleRestart = () => {
     resetMemorization();
     setCurrentAyahIndex(0);
@@ -150,32 +132,24 @@ export const AudioPlayer = () => {
       setTimeout(() => {
         if (audioRef.current && first.audio) {
           audioRef.current.src = first.audio;
-          audioRef.current
-            .play()
-            .then(() => setIsPlaying(true))
-            .catch((error) => {
-              console.log("Auto-play prevented by browser:", error);
-            });
+          audioRef.current.play().then(() => setIsPlaying(true)).catch(error => {
+            console.log("Auto-play prevented by browser:", error);
+          });
         }
       }, 300);
     }
   };
-
   if (selectedAyahsData.length === 0) {
-    return (
-      <Card className="w-full shadow-peaceful">
+    return <Card className="w-full shadow-peaceful">
         <CardContent className="p-6">
           <p className="text-center text-muted-foreground">
             Tidak ada ayat yang dipilih untuk dihafal
           </p>
         </CardContent>
-      </Card>
-    );
+      </Card>;
   }
-
   if (isCompleted) {
-    return (
-      <Card className="w-full shadow-peaceful">
+    return <Card className="w-full shadow-peaceful">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-primary">
             <CheckCircle className="h-5 w-5 text-islamic-gold" />
@@ -183,23 +157,17 @@ export const AudioPlayer = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-muted-foreground">
-            Alhamdulillah! Anda telah selesai menghafal ayat-ayat yang dipilih.
-          </p>
+          <p className="text-muted-foreground">Alhamdulillah! Anda telah selesai mengulang ayat-ayat yang dipilih.</p>
           <Button onClick={handleRestart} className="w-full">
             <RotateCcw className="h-4 w-4 mr-2" />
             Ayo Mulai Lagi!
           </Button>
         </CardContent>
-      </Card>
-    );
+      </Card>;
   }
-
   const totalAyahs = selectedAyahsData.length;
-  const progressPercentage = ((currentAyahIndex) / totalAyahs) * 100;
-
-  return (
-    <Card className="w-full shadow-peaceful">
+  const progressPercentage = currentAyahIndex / totalAyahs * 100;
+  return <Card className="w-full shadow-peaceful">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-primary">
           <Volume2 className="h-5 w-5" />
@@ -214,11 +182,9 @@ export const AudioPlayer = () => {
               <Badge variant="outline">
                 Sesi: {rangeRepeat + 1}/{repeatConfig.range}
               </Badge>
-              {currentAyahData && (
-                <Badge variant="outline">
+              {currentAyahData && <Badge variant="outline">
                   Ulangi: {currentRepeat + 1}/{currentAyahRepeats}
-                </Badge>
-              )}
+                </Badge>}
             </div>
           </div>
           <Progress value={progressPercentage} className="h-2" />
@@ -227,36 +193,17 @@ export const AudioPlayer = () => {
       
       <CardContent className="space-y-4">
         <div className="flex items-center justify-center">
-          {isPlaying ? (
-            <Button
-              size="lg"
-              onClick={handlePause}
-              className="h-12 w-12 rounded-full bg-gradient-to-r from-primary to-primary-glow"
-            >
+          {isPlaying ? <Button size="lg" onClick={handlePause} className="h-12 w-12 rounded-full bg-gradient-to-r from-primary to-primary-glow">
               <Pause className="h-5 w-5" />
-            </Button>
-          ) : (
-            <Button
-              size="lg"
-              onClick={handlePlay}
-              className="h-12 w-12 rounded-full bg-gradient-to-r from-primary to-primary-glow"
-              disabled={!currentAyahData?.audio}
-            >
+            </Button> : <Button size="lg" onClick={handlePlay} className="h-12 w-12 rounded-full bg-gradient-to-r from-primary to-primary-glow" disabled={!currentAyahData?.audio}>
               <Play className="h-5 w-5 ml-1" />
-            </Button>
-          )}
+            </Button>}
         </div>
 
-        <audio
-          ref={audioRef}
-          onEnded={handleAudioEnd}
-          onError={() => {
-            console.error('Audio failed to load');
-            setIsPlaying(false);
-          }}
-          preload="metadata"
-        />
+        <audio ref={audioRef} onEnded={handleAudioEnd} onError={() => {
+        console.error('Audio failed to load');
+        setIsPlaying(false);
+      }} preload="metadata" />
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
