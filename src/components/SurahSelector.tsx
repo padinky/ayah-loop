@@ -72,7 +72,7 @@ export const SurahSelector = ({ onSurahSelect }: SurahSelectorProps) => {
           <Book className="h-5 w-5" />
           Pilih Surah
         </CardTitle>
-        <div className="relative">
+        <div className="relative mt-3">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Cari Surah..."
