@@ -86,7 +86,7 @@ export const AyahSelector = () => {
           <Popover open={isPickerOpen} onOpenChange={setIsPickerOpen}>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full justify-between">
-                {selectedAyahsToAdd.length > 0 ? `Dipilih ${selectedAyahsToAdd.length} ayat` : "Pilih ayat untuk ditambahkan..."}
+                {selectedAyahsToAdd.length > 0 ? `Dipilih ${selectedAyahsToAdd.length} ayat` : "Klik disini untuk pilih ayat"}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-72 p-0 z-50 bg-popover">
