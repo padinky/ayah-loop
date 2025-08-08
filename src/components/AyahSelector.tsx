@@ -96,21 +96,28 @@ export const AyahSelector = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    const allSelected =
-                      availableAyahs.length > 0 &&
-                      availableAyahs.every((a) =>
-                        selectedAyahsToAdd.includes(a.numberInSurah)
-                      )
+                    if (availableAyahs.length === 0) {
+                      if (selectedAyahs.length > 0) {
+                        // Clear all selected ayahs
+                        selectedAyahs.forEach((n) => toggleAyahSelection(n))
+                        setSelectedAyahsToAdd([])
+                      }
+                      return
+                    }
+                    const allSelected = availableAyahs.every((a) =>
+                      selectedAyahsToAdd.includes(a.numberInSurah)
+                    )
                     setSelectedAyahsToAdd(
                       allSelected ? [] : availableAyahs.map((a) => a.numberInSurah)
                     )
                   }}
-                  disabled={availableAyahs.length === 0}
+                  disabled={availableAyahs.length === 0 && selectedAyahs.length === 0}
                 >
-                  {availableAyahs.length > 0 &&
-                  availableAyahs.every((a) =>
-                    selectedAyahsToAdd.includes(a.numberInSurah)
-                  )
+                  {availableAyahs.length === 0
+                    ? "Hapus Semua"
+                    : availableAyahs.every((a) =>
+                        selectedAyahsToAdd.includes(a.numberInSurah)
+                      )
                     ? "Hapus Semua"
                     : "Pilih Semua"}
                 </Button>
