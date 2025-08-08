@@ -4,7 +4,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 import { FileText, Repeat, Plus, X } from "lucide-react";
 import { useState } from "react";
 
@@ -19,7 +20,8 @@ export const AyahSelector = () => {
     selectedSurah 
   } = useQuranStore();
   
-  const [selectedAyahToAdd, setSelectedAyahToAdd] = useState<string>("");
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [selectedAyahsToAdd, setSelectedAyahsToAdd] = useState<number[]>([]);
   const [tempRepeatValues, setTempRepeatValues] = useState<{[key: number]: string}>({});
 
   if (ayahs.length === 0) {
@@ -34,14 +36,16 @@ export const AyahSelector = () => {
     );
   }
 
-  const handleAddAyah = () => {
-    if (selectedAyahToAdd) {
-      const ayahNumber = parseInt(selectedAyahToAdd);
-      if (!selectedAyahs.includes(ayahNumber)) {
-        toggleAyahSelection(ayahNumber);
-        setAyahRepeat(ayahNumber, 1);
-      }
-      setSelectedAyahToAdd("");
+  const handleAddAyahs = () => {
+    if (selectedAyahsToAdd.length) {
+      selectedAyahsToAdd.forEach((ayahNumber) => {
+        if (!selectedAyahs.includes(ayahNumber)) {
+          toggleAyahSelection(ayahNumber);
+          setAyahRepeat(ayahNumber, 1);
+        }
+      });
+      setSelectedAyahsToAdd([]);
+      setIsPickerOpen(false);
     }
   };
 
@@ -96,26 +100,61 @@ export const AyahSelector = () => {
 
         {/* Add New Ayah Section */}
         <div className="space-y-3">
-          <Select value={selectedAyahToAdd} onValueChange={setSelectedAyahToAdd}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Pilih ayat untuk ditambahkan..." />
-            </SelectTrigger>
-            <SelectContent className="max-h-60">
-              {availableAyahs.map((ayah) => (
-                <SelectItem key={ayah.numberInSurah} value={ayah.numberInSurah.toString()}>
-                  Ayat {ayah.numberInSurah}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button 
-            onClick={handleAddAyah} 
-            disabled={!selectedAyahToAdd}
-            className="w-full"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            Tambah
-          </Button>
+          <Popover open={isPickerOpen} onOpenChange={setIsPickerOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-full justify-between">
+                {selectedAyahsToAdd.length > 0
+                  ? `Dipilih ${selectedAyahsToAdd.length} ayat`
+                  : "Pilih ayat untuk ditambahkan..."}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72 p-0 z-50 bg-popover">
+              <div className="p-3 border-b flex items-center justify-between">
+                <span className="text-sm font-medium">Pilih Ayat</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedAyahsToAdd(availableAyahs.map(a => a.numberInSurah))}
+                  disabled={availableAyahs.length === 0}
+                >
+                  Pilih Semua
+                </Button>
+              </div>
+              <ScrollArea className="max-h-60">
+                <div className="py-2">
+                  {availableAyahs.map((ayah) => {
+                    const n = ayah.numberInSurah;
+                    const checked = selectedAyahsToAdd.includes(n);
+                    return (
+                      <div key={n} className="flex items-center gap-2 px-3 py-2">
+                        <Checkbox
+                          id={`ayah-${n}`}
+                          checked={checked}
+                          onCheckedChange={(v) => {
+                            const val = !!v;
+                            setSelectedAyahsToAdd(prev =>
+                              val ? [...prev, n] : prev.filter(x => x !== n)
+                            );
+                          }}
+                        />
+                        <label htmlFor={`ayah-${n}`} className="text-sm cursor-pointer">
+                          Ayat {n}
+                        </label>
+                      </div>
+                    );
+                  })}
+                  {availableAyahs.length === 0 && (
+                    <div className="px-3 py-4 text-sm text-muted-foreground">Semua ayat sudah dipilih</div>
+                  )}
+                </div>
+              </ScrollArea>
+              <div className="p-3 border-t">
+                <Button className="w-full" onClick={handleAddAyahs} disabled={selectedAyahsToAdd.length === 0}>
+                  <Plus className="h-4 w-4 mr-1" /> Tambah
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
 
         {/* Selected Ayahs List */}
