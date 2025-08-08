@@ -15,7 +15,8 @@ export const AyahSelector = () => {
     repeatConfig, 
     toggleAyahSelection, 
     selectAllAyahs,
-    setAyahRepeat 
+    setAyahRepeat,
+    selectedSurah 
   } = useQuranStore();
   
   const [selectedAyahToAdd, setSelectedAyahToAdd] = useState<string>("");
@@ -72,6 +73,17 @@ export const AyahSelector = () => {
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
+        {selectedSurah && (
+          <div className="flex items-center justify-between rounded-md border bg-muted/30 p-3">
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-medium">Surah Terpilih</Label>
+              <span className="text-sm text-muted-foreground">
+                {selectedSurah.number}. {selectedSurah.englishName}
+              </span>
+            </div>
+            <div className="arabic-text text-base">{selectedSurah.name}</div>
+          </div>
+        )}
         {/* Select All Button */}
         <div className="flex justify-end">
           <Button 
