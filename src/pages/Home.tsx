@@ -88,7 +88,7 @@ const Home = () => {
         </div>
 
         {/* Instruction Banner */}
-        <Alert className="mb-8 bg-accent/30 border-accent/60 p-3 sm:p-4 rounded-md shadow-peaceful">
+        <Alert className="mb-8 bg-muted/60 border-border/60 p-3 sm:p-4 rounded-md shadow-peaceful">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-muted-foreground text-sm sm:text-base">
             Pilih surah, pilih ayat yang ingin Anda hafal, atur preferensi pengulangan, dan mulai perjalanan spiritual Anda dengan panduan hafalan audio. Semoga Allah mudahkan untuk Anda. Aamiin.
