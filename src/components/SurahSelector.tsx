@@ -78,7 +78,7 @@ export const SurahSelector = ({ onSurahSelect }: SurahSelectorProps) => {
             placeholder="Cari Surah..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 mt-4"
+            className="pl-10 mt-6"
           />
         </div>
       </CardHeader>
