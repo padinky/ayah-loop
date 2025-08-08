@@ -94,7 +94,7 @@ const Memorize = () => {
             <Card className="shadow-peaceful">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  <span className="text-primary">Ayat untuk Dihafal</span>
+                  <span className="text-primary">&nbsp;</span>
                   {currentAyahData && (
                     <Badge className="bg-gradient-to-r from-primary to-primary-glow">
                       Saat Ini: Ayat {currentAyahData.numberInSurah}
