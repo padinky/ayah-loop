@@ -87,15 +87,6 @@ export const AyahSelector = () => {
               </div>
             )}
           </div>
-          <Button 
-            onClick={selectAllAyahs}
-            variant="outline" 
-            className="shrink-0"
-            disabled={selectedAyahs.length === ayahs.length}
-          >
-            <FileText className="h-4 w-4 mr-2" />
-            Pilih Semua Ayat
-          </Button>
         </div>
 
         {/* Add New Ayah Section */}
