@@ -74,7 +74,7 @@ const Memorize = () => {
             <div className="flex items-center gap-2">
               <Target className="h-4 w-4 text-islamic-gold" />
               <Badge variant="outline">
-                {selectedAyahs.length} Ayat
+                {selectedAyahs.length} Ayat Terpilih
               </Badge>
             </div>
             <ThemeToggle />
