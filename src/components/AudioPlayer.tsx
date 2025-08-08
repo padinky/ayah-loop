@@ -144,8 +144,20 @@ export const AudioPlayer = () => {
     resetMemorization();
     setCurrentAyahIndex(0);
     setIsCompleted(false);
-    if (selectedAyahsData.length > 0) {
-      setCurrentAyah(selectedAyahsData[0].numberInSurah);
+    const first = selectedAyahsData[0];
+    if (first) {
+      setCurrentAyah(first.numberInSurah);
+      setTimeout(() => {
+        if (audioRef.current && first.audio) {
+          audioRef.current.src = first.audio;
+          audioRef.current
+            .play()
+            .then(() => setIsPlaying(true))
+            .catch((error) => {
+              console.log("Auto-play prevented by browser:", error);
+            });
+        }
+      }, 300);
     }
   };
 
