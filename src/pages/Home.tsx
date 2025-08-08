@@ -75,7 +75,7 @@ const Home = () => {
               <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
                 Assalamu'alaykum, Penghafal Al-Qur'an!
               </h1>
-              <p className="text-muted-foreground text-sm sm:text-base">Aplikasi ini bisa membantu mengulang hafalan Anda</p>
+              <p className="text-muted-foreground text-sm sm:text-base">Aplikasi Ini Membantu Mengulang Hafalan Anda</p>
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
