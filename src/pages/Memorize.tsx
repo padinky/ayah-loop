@@ -59,7 +59,7 @@ const Memorize = () => {
               <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
                 <BookOpen className="h-5 w-5 text-white" />
               </div>
-              <div>
+              <div className="flex items-baseline gap-3">
                 <h1 className="text-2xl font-bold text-primary">
                   {selectedSurah.englishName}
                 </h1>
