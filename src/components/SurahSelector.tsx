@@ -68,7 +68,7 @@ export const SurahSelector = ({ onSurahSelect }: SurahSelectorProps) => {
   return (
     <Card className="w-full shadow-peaceful">
       <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2 text-primary">
+        <CardTitle className="flex items-center gap-2 text-primary mb-[25px]">
           <Book className="h-5 w-5" />
           Pilih Surah
         </CardTitle>
