@@ -80,7 +80,6 @@ export const AyahSelector = () => {
                 <span className="text-sm font-medium">
                   {selectedSurah.number}. {selectedSurah.englishName}
                 </span>
-                <span className="arabic-text text-base">{selectedSurah.name}</span>
               </div>
             )}
           </div>
