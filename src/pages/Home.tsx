@@ -11,41 +11,46 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Heart, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
 const Home = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const { selectedSurah, setAyahs, resetMemorization } = useQuranStore();
-  const { toast } = useToast();
+  const {
+    selectedSurah,
+    setAyahs,
+    resetMemorization
+  } = useQuranStore();
+  const {
+    toast
+  } = useToast();
   const rangeRepeatRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     resetMemorization();
   }, [resetMemorization]);
-
   const handleSurahSelect = async (surah: any) => {
     // Reset selections when changing surah
     useQuranStore.getState().setSelectedSurah(surah);
-    useQuranStore.setState({ 
-      selectedAyahs: [], 
-      repeatConfig: { ayahs: {}, range: 1 } 
+    useQuranStore.setState({
+      selectedAyahs: [],
+      repeatConfig: {
+        ayahs: {},
+        range: 1
+      }
     });
     setLoading(true);
-    
     try {
       const ayahsData = await quranApi.getCombinedSurahData(surah.number);
       setAyahs(ayahsData);
       toast({
         title: "Surah Berhasil Dimuat",
-        description: `${surah.englishName} dengan ${ayahsData.length} ayat siap untuk dipilih.`,
+        description: `${surah.englishName} dengan ${ayahsData.length} ayat siap untuk dipilih.`
       });
-      
+
       // Scroll to range repeat section on mobile
       setTimeout(() => {
         if (window.innerWidth < 1024 && rangeRepeatRef.current) {
-          rangeRepeatRef.current.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start' 
+          rangeRepeatRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
           });
         }
       }, 100);
@@ -54,15 +59,13 @@ const Home = () => {
       toast({
         title: "Gagal Memuat Surah",
         description: "Gagal memuat ayat. Silakan coba lagi.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-islamic-green-light/10 to-background">
+  return <div className="min-h-screen bg-gradient-to-br from-background via-islamic-green-light/10 to-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-8 gap-4">
@@ -71,18 +74,11 @@ const Home = () => {
               <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
                 Assalamu'alaykum, Penghafal Al-Qur'an!
               </h1>
-              <p className="text-muted-foreground text-sm sm:text-base">
-                Mulai perjalanan indah Anda menghafal Al-Qur'an
-              </p>
+              <p className="text-muted-foreground text-sm sm:text-base">Aplikasi ini bertujuan untuk membantu mengulang hafalan Anda</p>
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigate('/about')}
-              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3"
-            >
+            <Button variant="ghost" size="sm" onClick={() => navigate('/about')} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3">
               <Info className="h-4 w-4" />
               <span className="hidden sm:inline">Tentang</span>
             </Button>
@@ -112,34 +108,26 @@ const Home = () => {
           <div className="space-y-6">
             <SurahSelector onSurahSelect={handleSurahSelect} />
             
-            {selectedSurah && (
-              <div ref={rangeRepeatRef}>
+            {selectedSurah && <div ref={rangeRepeatRef}>
                 <RangeRepeatControl />
-              </div>
-            )}
+              </div>}
           </div>
 
           {/* Right Column */}
           <div className="space-y-6">
-            {loading ? (
-              <Card className="shadow-peaceful">
+            {loading ? <Card className="shadow-peaceful">
                 <CardContent className="p-8">
                   <div className="flex flex-col items-center gap-4">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                     <p className="text-muted-foreground">Memuat ayat...</p>
                   </div>
                 </CardContent>
-              </Card>
-            ) : (
-              <AyahSelector />
-            )}
+              </Card> : <AyahSelector />}
             
             <StartButton />
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Home;
