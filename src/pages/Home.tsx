@@ -7,9 +7,10 @@ import { AyahSelector } from "../components/AyahSelector";
 import { RangeRepeatControl } from "../components/RangeRepeatControl";
 import { StartButton } from "../components/StartButton";
 import { ThemeToggle } from "../components/ThemeToggle";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Heart, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 const Home = () => {
   const navigate = useNavigate();
@@ -86,22 +87,13 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Welcome Card */}
-        <Card className="mb-8 shadow-peaceful bg-gradient-to-r from-card to-muted/30">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-primary">
-              <Heart className="h-5 w-5 text-islamic-gold" />
-              Selamat Datang di Perjalanan Menghafal Anda
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground leading-relaxed">
-              Pilih surah, pilih ayat yang ingin Anda hafal, atur preferensi pengulangan, 
-              dan mulai perjalanan spiritual Anda dengan panduan hafalan audio. 
-              Semoga Allah mudahkan untuk Anda. Aamiin.
-            </p>
-          </CardContent>
-        </Card>
+        {/* Instruction Banner */}
+        <Alert className="mb-8 bg-accent/30 border-accent/60 p-3 sm:p-4 rounded-md shadow-peaceful">
+          <Info className="h-4 w-4" />
+          <AlertDescription className="text-muted-foreground text-sm sm:text-base">
+            Pilih surah, pilih ayat yang ingin Anda hafal, atur preferensi pengulangan, dan mulai perjalanan spiritual Anda dengan panduan hafalan audio. Semoga Allah mudahkan untuk Anda. Aamiin.
+          </AlertDescription>
+        </Alert>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column */}
