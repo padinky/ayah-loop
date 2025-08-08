@@ -176,7 +176,7 @@ export const AudioPlayer = () => {
           </p>
           <Button onClick={handleRestart} className="w-full">
             <RotateCcw className="h-4 w-4 mr-2" />
-            Mulai Lagi
+            Ayo Mulai Lagi!
           </Button>
         </CardContent>
       </Card>
