@@ -81,8 +81,10 @@ export const AyahSelector = () => {
           <div className="flex items-center gap-3">
             {selectedSurah && (
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">
-                  {selectedSurah.number}. {selectedSurah.englishName}
+                <span className="text-sm font-medium flex items-center gap-2">
+                  <span className="text-muted-foreground">Surah Terpilih:</span>
+                  <span>{selectedSurah.number}. {selectedSurah.englishName}</span>
+                  <span className="arabic-text text-base">{selectedSurah.name}</span>
                 </span>
               </div>
             )}
