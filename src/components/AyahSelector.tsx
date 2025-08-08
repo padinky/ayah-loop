@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { FileText, Repeat, Plus, X } from "lucide-react";
+import { FileText, Repeat, Plus, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
 export const AyahSelector = () => {
   const {
@@ -86,7 +86,8 @@ export const AyahSelector = () => {
           <Popover open={isPickerOpen} onOpenChange={setIsPickerOpen}>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full justify-between">
-                {selectedAyahsToAdd.length > 0 ? `Dipilih ${selectedAyahsToAdd.length} ayat` : "Klik disini untuk pilih ayat"}
+                <span className="truncate">{selectedAyahsToAdd.length > 0 ? `Dipilih ${selectedAyahsToAdd.length} ayat` : "Klik disini untuk pilih ayat"}</span>
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-72 p-0 z-50 bg-popover">
