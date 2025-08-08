@@ -120,7 +120,7 @@ export const AyahSelector = () => {
                   Pilih Semua
                 </Button>
               </div>
-              <ScrollArea className="max-h-60">
+              <ScrollArea className="max-h-80 overflow-y-auto">
                 <div className="py-2">
                   {availableAyahs.map((ayah) => {
                     const n = ayah.numberInSurah;
