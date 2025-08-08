@@ -92,8 +92,27 @@ export const AyahSelector = () => {
             <PopoverContent className="w-72 p-0 z-50 bg-popover">
               <div className="p-3 border-b flex items-center justify-between">
                 <span className="text-sm font-medium">Pilih Ayat</span>
-                <Button variant="ghost" size="sm" onClick={() => setSelectedAyahsToAdd(availableAyahs.map(a => a.numberInSurah))} disabled={availableAyahs.length === 0}>
-                  Pilih Semua
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    const allSelected =
+                      availableAyahs.length > 0 &&
+                      availableAyahs.every((a) =>
+                        selectedAyahsToAdd.includes(a.numberInSurah)
+                      )
+                    setSelectedAyahsToAdd(
+                      allSelected ? [] : availableAyahs.map((a) => a.numberInSurah)
+                    )
+                  }}
+                  disabled={availableAyahs.length === 0}
+                >
+                  {availableAyahs.length > 0 &&
+                  availableAyahs.every((a) =>
+                    selectedAyahsToAdd.includes(a.numberInSurah)
+                  )
+                    ? "Hapus Semua"
+                    : "Pilih Semua"}
                 </Button>
               </div>
               <ScrollArea className="max-h-80 overflow-y-auto">
