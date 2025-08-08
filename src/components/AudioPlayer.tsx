@@ -179,7 +179,7 @@ export const AudioPlayer = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-primary">
             <CheckCircle className="h-5 w-5 text-islamic-gold" />
-            Hafalan Selesai!
+            Pengulangan Selesai!
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
