@@ -5,6 +5,7 @@ import { quranApi } from "../services/quranApi";
 import { SurahSelector } from "../components/SurahSelector";
 import { AyahSelector } from "../components/AyahSelector";
 import { RangeRepeatControl } from "../components/RangeRepeatControl";
+import { ReciterSelector } from "../components/ReciterSelector";
 import { StartButton } from "../components/StartButton";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,6 +19,7 @@ const Home = () => {
   const [showInstructions, setShowInstructions] = useState(true);
   const {
     selectedSurah,
+    selectedReciter,
     setAyahs,
     resetMemorization
   } = useQuranStore();
@@ -40,7 +42,7 @@ const Home = () => {
     });
     setLoading(true);
     try {
-      const ayahsData = await quranApi.getCombinedSurahData(surah.number);
+      const ayahsData = await quranApi.getCombinedSurahData(surah.number, selectedReciter?.identifier);
       setAyahs(ayahsData);
       toast({
         title: "Surah Berhasil Dimuat",
@@ -109,6 +111,7 @@ const Home = () => {
           {/* Left Column */}
           <div className="space-y-6">
             <SurahSelector onSurahSelect={handleSurahSelect} />
+            <ReciterSelector />
             
             {selectedSurah && <div ref={rangeRepeatRef}>
                 <RangeRepeatControl />

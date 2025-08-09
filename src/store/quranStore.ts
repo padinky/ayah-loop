@@ -22,8 +22,18 @@ export interface RepeatConfig {
   range: number;
 }
 
+export interface Reciter {
+  identifier: string;
+  language: string;
+  name: string;
+  englishName: string;
+  format: string;
+  type: string;
+}
+
 export interface QuranState {
   selectedSurah: Surah | null;
+  selectedReciter: Reciter | null;
   ayahs: Ayah[];
   selectedAyahs: number[];
   repeatConfig: RepeatConfig;
@@ -33,6 +43,7 @@ export interface QuranState {
   rangeRepeat: number;
   
   setSelectedSurah: (surah: Surah) => void;
+  setSelectedReciter: (reciter: Reciter) => void;
   setAyahs: (ayahs: Ayah[]) => void;
   toggleAyahSelection: (ayahNumber: number) => void;
   selectAllAyahs: () => void;
@@ -48,6 +59,14 @@ export interface QuranState {
 
 export const useQuranStore = create<QuranState>((set) => ({
   selectedSurah: null,
+  selectedReciter: {
+    identifier: "ar.alafasy",
+    language: "ar",
+    name: "العفاسي",
+    englishName: "Alafasy",
+    format: "audio",
+    type: "versebyverse"
+  },
   ayahs: [],
   selectedAyahs: [],
   repeatConfig: {
@@ -60,6 +79,8 @@ export const useQuranStore = create<QuranState>((set) => ({
   rangeRepeat: 0,
 
   setSelectedSurah: (surah) => set({ selectedSurah: surah }),
+  
+  setSelectedReciter: (reciter) => set({ selectedReciter: reciter }),
   
   setAyahs: (ayahs) => set({ ayahs }),
   
