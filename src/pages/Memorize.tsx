@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuranStore } from "../store/quranStore";
+import { quranApi } from "../services/quranApi";
 import { AyahDisplay } from "../components/AyahDisplay";
 import { AudioPlayer } from "../components/AudioPlayer";
 import { ThemeToggle } from "../components/ThemeToggle";
@@ -15,12 +16,14 @@ const Memorize = () => {
   const navigate = useNavigate();
   const { 
     selectedSurah, 
+    selectedReciter,
     ayahs, 
     selectedAyahs, 
     currentAyah, 
     isPlaying, 
     repeatConfig,
-    currentRepeat
+    currentRepeat,
+    setAyahs
   } = useQuranStore();
 
   useEffect(() => {
@@ -28,6 +31,22 @@ const Memorize = () => {
       navigate('/');
     }
   }, [selectedSurah, selectedAyahs, navigate]);
+
+  // Reload audio when reciter changes
+  useEffect(() => {
+    const reloadAudio = async () => {
+      if (selectedSurah && selectedReciter) {
+        try {
+          const ayahsData = await quranApi.getCombinedSurahData(selectedSurah.number, selectedReciter.identifier);
+          setAyahs(ayahsData);
+        } catch (error) {
+          console.error('Error reloading audio:', error);
+        }
+      }
+    };
+
+    reloadAudio();
+  }, [selectedReciter, selectedSurah, setAyahs]);
 
   if (!selectedSurah || selectedAyahs.length === 0) {
     return null;
