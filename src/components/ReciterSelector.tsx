@@ -34,7 +34,16 @@ export const ReciterSelector = ({ showResetButton = false }: { showResetButton?:
   }, [selectedReciter]);
 
   const handleReciterChange = (value: string) => {
-    setTempSelectedReciter(value);
+    if (showResetButton) {
+      // On memorize page - only update temp selection
+      setTempSelectedReciter(value);
+    } else {
+      // On home page - immediately update the selected reciter
+      const reciter = reciters.find(r => r.identifier === value);
+      if (reciter) {
+        setSelectedReciter(reciter);
+      }
+    }
   };
 
   const handleResetAndRestart = async () => {
@@ -82,7 +91,7 @@ export const ReciterSelector = ({ showResetButton = false }: { showResetButton?:
       </CardHeader>
       <CardContent className="space-y-4">
         <Select
-          value={tempSelectedReciter}
+          value={showResetButton ? tempSelectedReciter : (selectedReciter?.identifier || "")}
           onValueChange={handleReciterChange}
         >
           <SelectTrigger className="w-full">
