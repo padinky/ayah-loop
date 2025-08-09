@@ -30,6 +30,25 @@ const Home = () => {
   useEffect(() => {
     resetMemorization();
   }, [resetMemorization]);
+
+  // Reload ayahs when reciter changes
+  useEffect(() => {
+    const reloadAyahsWithNewReciter = async () => {
+      if (selectedSurah && selectedReciter) {
+        setLoading(true);
+        try {
+          const ayahsData = await quranApi.getCombinedSurahData(selectedSurah.number, selectedReciter.identifier);
+          setAyahs(ayahsData);
+        } catch (error) {
+          console.error('Error reloading ayahs with new reciter:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    reloadAyahsWithNewReciter();
+  }, [selectedReciter, selectedSurah, setAyahs]);
   const handleSurahSelect = async (surah: any) => {
     // Reset selections when changing surah
     useQuranStore.getState().setSelectedSurah(surah);
