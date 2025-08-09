@@ -90,13 +90,13 @@ const Home = () => {
 
         {/* Instruction Banner */}
         {showInstructions && (
-          <Alert className="mb-8 bg-secondary/40 border-secondary/60 p-3 sm:p-4 rounded-md shadow-peaceful">
+          <Alert className="mb-8 bg-secondary/40 border-secondary/60 p-3 sm:p-4 pr-10 rounded-md shadow-peaceful relative">
             <button
               aria-label="Hide instructions"
-              className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute right-2 top-2 z-10 p-2 -m-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-foreground/5 active:bg-foreground/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 touch-manipulation"
               onClick={() => setShowInstructions(false)}
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </button>
             <Info className="h-4 w-4" />
             <AlertDescription className="text-muted-foreground text-sm sm:text-base">
