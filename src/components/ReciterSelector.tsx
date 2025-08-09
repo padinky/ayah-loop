@@ -78,12 +78,7 @@ export const ReciterSelector = () => {
           <SelectContent className="bg-background border shadow-lg z-50">
             {reciters.map((reciter) => (
               <SelectItem key={reciter.identifier} value={reciter.identifier}>
-                <div className="flex items-center justify-between w-full">
-                  <span>{reciter.englishName}</span>
-                  <span className="text-sm text-muted-foreground arabic-text">
-                    {reciter.name}
-                  </span>
-                </div>
+                {reciter.englishName}
               </SelectItem>
             ))}
           </SelectContent>
