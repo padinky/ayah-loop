@@ -106,7 +106,7 @@ const Memorize = () => {
           <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-6 space-y-6">
               <AudioPlayer />
-              <ReciterSelector />
+              <ReciterSelector showResetButton={true} />
             </div>
           </div>
 

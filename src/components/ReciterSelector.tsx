@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Volume2, RotateCcw } from "lucide-react";
 
-export const ReciterSelector = () => {
+export const ReciterSelector = ({ showResetButton = false }: { showResetButton?: boolean }) => {
   const [reciters, setReciters] = useState<Reciter[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -84,15 +84,17 @@ export const ReciterSelector = () => {
           </SelectContent>
         </Select>
         
-        <Button
-          onClick={handleResetAndRestart}
-          variant="outline"
-          className="w-full"
-          size="sm"
-        >
-          <RotateCcw className="h-4 w-4 mr-2" />
-          Ganti Qari dan Ulang Dari Awal
-        </Button>
+        {showResetButton && (
+          <Button
+            onClick={handleResetAndRestart}
+            variant="outline"
+            className="w-full"
+            size="sm"
+          >
+            <RotateCcw className="h-4 w-4 mr-2" />
+            Ganti Qari dan Ulang Dari Awal
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
