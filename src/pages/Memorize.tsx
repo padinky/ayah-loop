@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft, BookOpen, Target } from "lucide-react";
+import { ReciterSelector } from "../components/ReciterSelector";
 import { Badge } from "@/components/ui/badge";
 
 const Memorize = () => {
@@ -82,10 +83,11 @@ const Memorize = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Audio Player - Fixed position */}
+          {/* Controls - Fixed position */}
           <div className="lg:col-span-1">
-            <div className="lg:sticky lg:top-6">
+            <div className="lg:sticky lg:top-6 space-y-6">
               <AudioPlayer />
+              <ReciterSelector />
             </div>
           </div>
 
