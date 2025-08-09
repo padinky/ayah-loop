@@ -4,13 +4,15 @@ import { quranApi } from "../services/quranApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Volume2, RotateCcw } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Volume2, RotateCcw, User } from "lucide-react";
 
 export const ReciterSelector = ({ showResetButton = false }: { showResetButton?: boolean }) => {
   const [reciters, setReciters] = useState<Reciter[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { selectedReciter, setSelectedReciter, resetMemorization } = useQuranStore();
+  const [tempSelectedReciter, setTempSelectedReciter] = useState<string>("");
+  const { selectedReciter, setSelectedReciter, resetMemorization, selectedSurah, setAyahs } = useQuranStore();
 
   useEffect(() => {
     const fetchReciters = async () => {
@@ -18,6 +20,10 @@ export const ReciterSelector = ({ showResetButton = false }: { showResetButton?:
         setLoading(true);
         const reciterData = await quranApi.getReciters();
         setReciters(reciterData);
+        // Set temp selected to current reciter when available
+        if (selectedReciter) {
+          setTempSelectedReciter(selectedReciter.identifier);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load Reciters');
       } finally {
@@ -26,16 +32,24 @@ export const ReciterSelector = ({ showResetButton = false }: { showResetButton?:
     };
 
     fetchReciters();
-  }, []);
+  }, [selectedReciter]);
 
   const handleReciterChange = (value: string) => {
-    const reciter = reciters.find(r => r.identifier === value);
-    if (reciter) {
-      setSelectedReciter(reciter);
-    }
+    setTempSelectedReciter(value);
   };
 
-  const handleResetAndRestart = () => {
+  const handleResetAndRestart = async () => {
+    const newReciter = reciters.find(r => r.identifier === tempSelectedReciter);
+    if (newReciter && selectedSurah) {
+      setSelectedReciter(newReciter);
+      // Reload audio with new reciter
+      try {
+        const ayahsData = await quranApi.getCombinedSurahData(selectedSurah.number, newReciter.identifier);
+        setAyahs(ayahsData);
+      } catch (error) {
+        console.error('Error reloading audio:', error);
+      }
+    }
     resetMemorization();
   };
 
@@ -68,8 +82,18 @@ export const ReciterSelector = ({ showResetButton = false }: { showResetButton?:
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {showResetButton && selectedReciter && (
+          <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
+            <User className="h-4 w-4 text-primary" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Qari Saat Ini:</p>
+              <p className="text-xs text-muted-foreground">{selectedReciter.englishName}</p>
+            </div>
+          </div>
+        )}
+        
         <Select
-          value={selectedReciter?.identifier || ""}
+          value={tempSelectedReciter}
           onValueChange={handleReciterChange}
         >
           <SelectTrigger className="w-full">

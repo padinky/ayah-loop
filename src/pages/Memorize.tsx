@@ -32,21 +32,6 @@ const Memorize = () => {
     }
   }, [selectedSurah, selectedAyahs, navigate]);
 
-  // Reload audio when reciter changes
-  useEffect(() => {
-    const reloadAudio = async () => {
-      if (selectedSurah && selectedReciter) {
-        try {
-          const ayahsData = await quranApi.getCombinedSurahData(selectedSurah.number, selectedReciter.identifier);
-          setAyahs(ayahsData);
-        } catch (error) {
-          console.error('Error reloading audio:', error);
-        }
-      }
-    };
-
-    reloadAudio();
-  }, [selectedReciter, selectedSurah, setAyahs]);
 
   if (!selectedSurah || selectedAyahs.length === 0) {
     return null;
