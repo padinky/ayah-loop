@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { FileText, Repeat, Plus, X, ChevronDown } from "lucide-react";
+import { FileText, Repeat, Plus, X, ChevronDown, Sparkles } from "lucide-react";
 import { useState } from "react";
 export const AyahSelector = () => {
   const {
@@ -64,8 +64,11 @@ export const AyahSelector = () => {
           <FileText className="h-5 w-5" />
           Pilih Ayat untuk Dihafal
         </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Tambahkan ayat satu per satu dan atur berapa kali setiap ayat harus diulang. Setelah selesai, scroll ke bawah dan klik "Mulai Hafalan"
+        <p className="mt-2 flex items-start gap-2 rounded-md bg-primary/5 border border-primary/20 p-3 text-sm text-foreground shadow-peaceful">
+          <span aria-hidden="true"><Sparkles className="h-4 w-4 text-primary mt-0.5" /></span>
+          <span>
+            Tambahkan ayat satu per satu dan atur berapa kali setiap ayat harus diulang. Setelah selesai, scroll ke bawah dan klik <strong className="font-semibold">"Mulai Hafalan"</strong>
+          </span>
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
