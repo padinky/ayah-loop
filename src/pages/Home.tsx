@@ -10,12 +10,12 @@ import { ThemeToggle } from "../components/ThemeToggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { Info, ChevronDown } from "lucide-react";
+import { Info, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 const Home = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(true);
   const {
     selectedSurah,
     setAyahs,
@@ -89,20 +89,21 @@ const Home = () => {
         </div>
 
         {/* Instruction Banner */}
-        <Collapsible defaultOpen className="mb-8">
-          <CollapsibleTrigger className="flex items-center gap-2 text-sm sm:text-base font-medium hover:underline [&[data-state=open]>svg]:rotate-180">
+        {showInstructions && (
+          <Alert className="mb-8 bg-secondary/40 border-secondary/60 p-3 sm:p-4 rounded-md shadow-peaceful">
+            <button
+              aria-label="Hide instructions"
+              className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => setShowInstructions(false)}
+            >
+              <X className="h-4 w-4" />
+            </button>
             <Info className="h-4 w-4" />
-            <span>Panduan</span>
-            <ChevronDown className="h-4 w-4 transition-transform" />
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <Alert className="mt-3 bg-secondary/40 border-secondary/60 p-3 sm:p-4 rounded-md shadow-peaceful">
-              <AlertDescription className="text-muted-foreground text-sm sm:text-base">
-                Pilih surah, pilih ayat yang ingin Anda hafal, atur preferensi pengulangan, dan mulai perjalanan spiritual Anda dengan panduan hafalan audio. Semoga Allah mudahkan untuk Anda. Aamiin.
-              </AlertDescription>
-            </Alert>
-          </CollapsibleContent>
-        </Collapsible>
+            <AlertDescription className="text-muted-foreground text-sm sm:text-base">
+              Pilih surah, pilih ayat yang ingin Anda hafal, atur preferensi pengulangan, dan mulai perjalanan spiritual Anda dengan panduan hafalan audio. Semoga Allah mudahkan untuk Anda. Aamiin.
+            </AlertDescription>
+          </Alert>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column */}
