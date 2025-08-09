@@ -3,7 +3,7 @@ import { useQuranStore } from "../store/quranStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Play, Pause, SkipForward, SkipBack, Volume2, RotateCcw, CheckCircle } from "lucide-react";
+import { Play, Pause, SkipForward, SkipBack, Volume2, RotateCcw, CheckCircle, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 export const AudioPlayer = () => {
   const {
@@ -14,6 +14,7 @@ export const AudioPlayer = () => {
     isPlaying,
     currentRepeat,
     rangeRepeat,
+    selectedReciter,
     setCurrentAyah,
     setIsPlaying,
     incrementCurrentRepeat,
@@ -173,6 +174,17 @@ export const AudioPlayer = () => {
           <Volume2 className="h-5 w-5" />
           Pemutar Audio
         </CardTitle>
+        
+        {selectedReciter && (
+          <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
+            <User className="h-4 w-4 text-primary" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Qari Saat Ini:</p>
+              <p className="text-xs text-muted-foreground">{selectedReciter.englishName}</p>
+            </div>
+          </div>
+        )}
+        
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">

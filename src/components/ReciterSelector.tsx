@@ -4,8 +4,7 @@ import { quranApi } from "../services/quranApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Volume2, RotateCcw, User } from "lucide-react";
+import { Volume2, RotateCcw } from "lucide-react";
 
 export const ReciterSelector = ({ showResetButton = false }: { showResetButton?: boolean }) => {
   const [reciters, setReciters] = useState<Reciter[]>([]);
@@ -82,16 +81,6 @@ export const ReciterSelector = ({ showResetButton = false }: { showResetButton?:
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {showResetButton && selectedReciter && (
-          <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
-            <User className="h-4 w-4 text-primary" />
-            <div className="flex-1">
-              <p className="text-sm font-medium">Qari Saat Ini:</p>
-              <p className="text-xs text-muted-foreground">{selectedReciter.englishName}</p>
-            </div>
-          </div>
-        )}
-        
         <Select
           value={tempSelectedReciter}
           onValueChange={handleReciterChange}
