@@ -3,13 +3,14 @@ import { useQuranStore, Reciter } from "../store/quranStore";
 import { quranApi } from "../services/quranApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Volume2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Volume2, RotateCcw } from "lucide-react";
 
 export const ReciterSelector = () => {
   const [reciters, setReciters] = useState<Reciter[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { selectedReciter, setSelectedReciter } = useQuranStore();
+  const { selectedReciter, setSelectedReciter, resetMemorization } = useQuranStore();
 
   useEffect(() => {
     const fetchReciters = async () => {
@@ -32,6 +33,10 @@ export const ReciterSelector = () => {
     if (reciter) {
       setSelectedReciter(reciter);
     }
+  };
+
+  const handleResetAndRestart = () => {
+    resetMemorization();
   };
 
   if (loading) {
@@ -62,7 +67,7 @@ export const ReciterSelector = () => {
           Pilih Qari
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <Select
           value={selectedReciter?.identifier || ""}
           onValueChange={handleReciterChange}
@@ -83,6 +88,16 @@ export const ReciterSelector = () => {
             ))}
           </SelectContent>
         </Select>
+        
+        <Button
+          onClick={handleResetAndRestart}
+          variant="outline"
+          className="w-full"
+          size="sm"
+        >
+          <RotateCcw className="h-4 w-4 mr-2" />
+          Ganti Qari dan Ulang Dari Awal
+        </Button>
       </CardContent>
     </Card>
   );
