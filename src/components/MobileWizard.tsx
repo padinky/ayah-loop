@@ -169,18 +169,6 @@ export const MobileWizard = () => {
         </div>
       )}
 
-      {(currentStep === 2 || currentStep === 3 || (currentStep === 4 && selectedReciter)) && (
-        <div className="flex justify-end">
-          <Button 
-            onClick={handleNext}
-            disabled={!canProceed()}
-            className="flex items-center gap-2"
-          >
-            Lanjut
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
 
       {currentStep === 5 && (
         <div className="flex justify-start">
