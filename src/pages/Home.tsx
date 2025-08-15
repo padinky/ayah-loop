@@ -6,6 +6,7 @@ import { SurahSelector } from "../components/SurahSelector";
 import { AyahSelector } from "../components/AyahSelector";
 import { RangeRepeatControl } from "../components/RangeRepeatControl";
 import { ReciterSelector } from "../components/ReciterSelector";
+import { MobileWizard } from "../components/MobileWizard";
 import { StartButton } from "../components/StartButton";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { Card, CardContent } from "@/components/ui/card";
@@ -127,7 +128,13 @@ const Home = () => {
           </Alert>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Mobile Wizard */}
+        <div className="lg:hidden">
+          <MobileWizard />
+        </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden lg:grid lg:grid-cols-2 gap-8">
           {/* Left Column */}
           <div className="space-y-6">
             <SurahSelector onSurahSelect={handleSurahSelect} />
