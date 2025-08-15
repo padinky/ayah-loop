@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuranStore } from "../store/quranStore";
 import { quranApi } from "../services/quranApi";
@@ -18,6 +19,7 @@ export const MobileWizard = () => {
   const {
     selectedSurah,
     selectedReciter,
+    selectedAyahs,
     setAyahs,
     resetMemorization
   } = useQuranStore();
@@ -85,7 +87,7 @@ export const MobileWizard = () => {
   const canProceed = () => {
     switch (currentStep) {
       case 1: return selectedSurah !== null;
-      case 2: return true; // Ayah selection is optional
+      case 2: return selectedAyahs.length > 0;
       case 3: return true; // Range repeat is optional
       case 4: return selectedReciter !== null;
       case 5: return true;
