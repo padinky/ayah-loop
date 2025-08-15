@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export const StartButton = () => {
   const navigate = useNavigate();
-  const { selectedSurah, selectedAyahs, repeatConfig } = useQuranStore();
+  const { selectedSurah, selectedAyahs, repeatConfig, selectedReciter } = useQuranStore();
 
   const canStart = selectedSurah && selectedAyahs.length > 0;
 
@@ -56,6 +56,7 @@ export const StartButton = () => {
           <h3 className="font-semibold text-primary">Siap Memulai Hafalan</h3>
           <div className="space-y-1 text-sm text-muted-foreground">
             <p><strong>Surah:</strong> {selectedSurah.englishName}</p>
+            <p><strong>Qari:</strong> {selectedReciter?.englishName || 'Belum dipilih'}</p>
             <p><strong>Ayat Terpilih:</strong> {totalAyahs} ayat</p>
             <p><strong>Pengulangan individual:</strong> {totalIndividualRepeats} total putar</p>
             <p><strong>Pengulangan sesi:</strong> {totalRangeRepeats} kali</p>
