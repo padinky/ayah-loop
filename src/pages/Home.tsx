@@ -27,6 +27,7 @@ const Home = () => {
     toast
   } = useToast();
   const rangeRepeatRef = useRef<HTMLDivElement>(null);
+  const reciterSelectorRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     resetMemorization();
   }, [resetMemorization]);
@@ -68,10 +69,10 @@ const Home = () => {
         description: `${surah.englishName} dengan ${ayahsData.length} ayat siap untuk dipilih.`
       });
 
-      // Scroll to range repeat section on mobile
+      // Scroll to reciter selector section on mobile
       setTimeout(() => {
-        if (window.innerWidth < 1024 && rangeRepeatRef.current) {
-          rangeRepeatRef.current.scrollIntoView({
+        if (window.innerWidth < 1024 && reciterSelectorRef.current) {
+          reciterSelectorRef.current.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
           });
@@ -130,7 +131,9 @@ const Home = () => {
           {/* Left Column */}
           <div className="space-y-6">
             <SurahSelector onSurahSelect={handleSurahSelect} />
-            <ReciterSelector />
+            <div ref={reciterSelectorRef}>
+              <ReciterSelector />
+            </div>
             
             {selectedSurah && <div ref={rangeRepeatRef}>
                 <RangeRepeatControl />
