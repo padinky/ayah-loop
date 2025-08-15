@@ -23,7 +23,7 @@ export const MobileWizard = () => {
   } = useQuranStore();
   const { toast } = useToast();
 
-  const totalSteps = 4;
+  const totalSteps = 5;
   const progress = (currentStep / totalSteps) * 100;
 
   const handleSurahSelect = async (surah: any) => {
@@ -74,9 +74,10 @@ export const MobileWizard = () => {
   const getStepTitle = () => {
     switch (currentStep) {
       case 1: return "Pilih Surah";
-      case 2: return "Pilih Qari";
+      case 2: return "Pilih Ayat";
       case 3: return "Atur Pengulangan";
-      case 4: return "Pilih Ayat & Mulai";
+      case 4: return "Pilih Qari";
+      case 5: return "Mulai Hafalan";
       default: return "";
     }
   };
@@ -84,9 +85,10 @@ export const MobileWizard = () => {
   const canProceed = () => {
     switch (currentStep) {
       case 1: return selectedSurah !== null;
-      case 2: return selectedReciter !== null;
+      case 2: return true; // Ayah selection is optional
       case 3: return true; // Range repeat is optional
-      case 4: return true;
+      case 4: return selectedReciter !== null;
+      case 5: return true;
       default: return false;
     }
   };
@@ -96,27 +98,24 @@ export const MobileWizard = () => {
       case 1:
         return <SurahSelector onSurahSelect={handleSurahSelect} />;
       case 2:
-        return <ReciterSelector />;
+        return loading ? (
+          <Card className="shadow-peaceful">
+            <CardContent className="p-8">
+              <div className="flex flex-col items-center gap-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <p className="text-muted-foreground">Memuat ayat...</p>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <AyahSelector />
+        );
       case 3:
         return selectedSurah ? <RangeRepeatControl /> : null;
       case 4:
-        return (
-          <div className="space-y-6">
-            {loading ? (
-              <Card className="shadow-peaceful">
-                <CardContent className="p-8">
-                  <div className="flex flex-col items-center gap-4">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                    <p className="text-muted-foreground">Memuat ayat...</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <AyahSelector />
-            )}
-            <StartButton />
-          </div>
-        );
+        return <ReciterSelector />;
+      case 5:
+        return <StartButton />;
       default:
         return null;
     }
@@ -148,7 +147,7 @@ export const MobileWizard = () => {
       </Card>
 
       {/* Navigation Buttons */}
-      {currentStep !== 1 && currentStep !== 4 && (
+      {currentStep !== 1 && currentStep !== 5 && (
         <div className="flex justify-between gap-4">
           <Button 
             variant="outline" 
@@ -170,10 +169,11 @@ export const MobileWizard = () => {
         </div>
       )}
 
-      {currentStep === 2 && selectedReciter && (
+      {(currentStep === 2 || currentStep === 3 || (currentStep === 4 && selectedReciter)) && (
         <div className="flex justify-end">
           <Button 
             onClick={handleNext}
+            disabled={!canProceed()}
             className="flex items-center gap-2"
           >
             Lanjut
@@ -182,7 +182,7 @@ export const MobileWizard = () => {
         </div>
       )}
 
-      {currentStep === 4 && (
+      {currentStep === 5 && (
         <div className="flex justify-start">
           <Button 
             variant="outline" 
