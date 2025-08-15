@@ -67,7 +67,7 @@ export const AyahSelector = () => {
         <p className="mt-2 flex items-start gap-2 rounded-md bg-primary/5 border border-primary/20 p-3 text-sm text-foreground shadow-peaceful">
           <span aria-hidden="true"><Sparkles className="h-4 w-4 text-primary mt-0.5" /></span>
           <span>
-            Tambahkan ayat satu per satu dan atur berapa kali setiap ayat harus diulang. Setelah selesai, scroll ke bawah dan klik <strong className="font-semibold">"Mulai Hafalan"</strong>
+            Tambahkan ayat satu per satu atau pilh semua ayat sebelum memulai proses hafalan
           </span>
         </p>
       </CardHeader>
