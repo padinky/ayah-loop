@@ -104,11 +104,15 @@ export const AudioPlayer = () => {
           // Completely finished
           setIsPlaying(false);
           setIsCompleted(true);
+          console.log('Session completed - scrolling to top');
           // Scroll to top when session is completely finished
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
+          setTimeout(() => {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+            console.log('Scrolled to top after completion');
+          }, 100);
         }
       } else {
         // Reset current repeat counter when moving to next ayah
