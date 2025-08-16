@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 
 const Memorize = () => {
   const navigate = useNavigate();
-  const controlsRef = useRef<HTMLDivElement>(null);
+  const ayahsDisplayRef = useRef<HTMLDivElement>(null);
   const { 
     selectedSurah, 
     selectedReciter,
@@ -33,11 +33,11 @@ const Memorize = () => {
     }
   }, [selectedSurah, selectedAyahs, navigate]);
 
-  // Scroll to controls section when page loads
+  // Scroll to ayahs display section when page loads
   useEffect(() => {
     if (selectedSurah && selectedAyahs.length > 0) {
       setTimeout(() => {
-        controlsRef.current?.scrollIntoView({ 
+        ayahsDisplayRef.current?.scrollIntoView({ 
           behavior: 'smooth', 
           block: 'start' 
         });
@@ -101,7 +101,7 @@ const Memorize = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Controls - Fixed position */}
-          <div ref={controlsRef} className="lg:col-span-1">
+          <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-6 space-y-6">
               <AudioPlayer />
               <ReciterSelector showResetButton={true} />
@@ -109,7 +109,7 @@ const Memorize = () => {
           </div>
 
           {/* Ayahs Display */}
-          <div className="lg:col-span-2">
+          <div ref={ayahsDisplayRef} className="lg:col-span-2">
             <Card className="shadow-peaceful">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
