@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuranStore } from "../store/quranStore";
 import { quranApi } from "../services/quranApi";
 import { SurahSelector } from "./SurahSelector";
@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 export const MobileWizard = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const progressRef = useRef<HTMLDivElement>(null);
   const {
     selectedSurah,
     selectedReciter,
@@ -64,6 +65,8 @@ export const MobileWizard = () => {
   const handleNext = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
+      // Scroll to progress section
+      progressRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
@@ -126,7 +129,7 @@ export const MobileWizard = () => {
   return (
     <div className="space-y-6">
       {/* Progress Bar */}
-      <Card className="shadow-peaceful">
+      <Card ref={progressRef} className="shadow-peaceful">
         <CardContent className="p-4">
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-muted-foreground">
