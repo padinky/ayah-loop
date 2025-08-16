@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuranStore } from "../store/quranStore";
 import { quranApi } from "../services/quranApi";
@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 
 const Memorize = () => {
   const navigate = useNavigate();
+  const controlsRef = useRef<HTMLDivElement>(null);
   const { 
     selectedSurah, 
     selectedReciter,
@@ -31,6 +32,18 @@ const Memorize = () => {
       navigate('/');
     }
   }, [selectedSurah, selectedAyahs, navigate]);
+
+  // Scroll to controls section when page loads
+  useEffect(() => {
+    if (selectedSurah && selectedAyahs.length > 0) {
+      setTimeout(() => {
+        controlsRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 300);
+    }
+  }, [selectedSurah, selectedAyahs]);
 
 
   if (!selectedSurah || selectedAyahs.length === 0) {
@@ -88,7 +101,7 @@ const Memorize = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Controls - Fixed position */}
-          <div className="lg:col-span-1">
+          <div ref={controlsRef} className="lg:col-span-1">
             <div className="lg:sticky lg:top-6 space-y-6">
               <AudioPlayer />
               <ReciterSelector showResetButton={true} />
