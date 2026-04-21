@@ -8,10 +8,12 @@ import { RangeRepeatControl } from "../components/RangeRepeatControl";
 import { ReciterSelector } from "../components/ReciterSelector";
 import { MobileWizard } from "../components/MobileWizard";
 import { StartButton } from "../components/StartButton";
+import { YouTubeSetupCard } from "../components/YouTubeSetupCard";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Info, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 const Home = () => {
@@ -19,8 +21,10 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [showInstructions, setShowInstructions] = useState(true);
   const {
+    sessionMode,
     selectedSurah,
     selectedReciter,
+    setSessionMode,
     setAyahs,
     resetMemorization
   } = useQuranStore();
@@ -36,7 +40,7 @@ const Home = () => {
   // Reload ayahs when reciter changes
   useEffect(() => {
     const reloadAyahsWithNewReciter = async () => {
-      if (selectedSurah && selectedReciter) {
+      if (sessionMode === "quran" && selectedSurah && selectedReciter) {
         setLoading(true);
         try {
           const ayahsData = await quranApi.getCombinedSurahData(selectedSurah.number, selectedReciter.identifier);
@@ -50,7 +54,7 @@ const Home = () => {
     };
 
     reloadAyahsWithNewReciter();
-  }, [selectedReciter, selectedSurah, setAyahs]);
+  }, [sessionMode, selectedReciter, selectedSurah, setAyahs]);
   const handleSurahSelect = async (surah: any) => {
     // Reset selections when changing surah
     useQuranStore.getState().setSelectedSurah(surah);
@@ -129,34 +133,58 @@ const Home = () => {
         )}
 
         {/* Mobile Wizard */}
+        <div className="mb-6">
+          <Tabs
+            value={sessionMode}
+            onValueChange={(value) => {
+              setSessionMode(value as "quran" | "youtube");
+              resetMemorization();
+            }}
+          >
+            <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
+              <TabsTrigger value="quran">Quran</TabsTrigger>
+              <TabsTrigger value="youtube" className="gap-2">
+                <span>YouTube</span>
+                <span className="inline-flex h-5 items-center justify-center rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 px-2 text-[10px] font-bold leading-none text-amber-950 shadow-[0_0_10px_rgba(250,204,21,0.55)] animate-pulse">
+                  Baru
+                </span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
         <div className="lg:hidden">
-          <MobileWizard />
+          {sessionMode === "quran" ? <MobileWizard /> : <div className="space-y-6">
+              <YouTubeSetupCard />
+              <StartButton />
+            </div>}
         </div>
 
         {/* Desktop Layout */}
         <div className="hidden lg:grid lg:grid-cols-2 gap-8">
           {/* Left Column */}
           <div className="space-y-6">
-            <SurahSelector onSurahSelect={handleSurahSelect} />
-            <div ref={reciterSelectorRef}>
-              <ReciterSelector />
-            </div>
-            
-            {selectedSurah && <div ref={rangeRepeatRef}>
-                <RangeRepeatControl />
-              </div>}
+            {sessionMode === "quran" ? <>
+                <SurahSelector onSurahSelect={handleSurahSelect} />
+                <div ref={reciterSelectorRef}>
+                  <ReciterSelector />
+                </div>
+                {selectedSurah && <div ref={rangeRepeatRef}>
+                    <RangeRepeatControl />
+                  </div>}
+              </> : <YouTubeSetupCard />}
           </div>
 
           {/* Right Column */}
           <div className="space-y-6">
-            {loading ? <Card className="shadow-peaceful">
+            {sessionMode === "quran" && (loading ? <Card className="shadow-peaceful">
                 <CardContent className="p-8">
                   <div className="flex flex-col items-center gap-4">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                     <p className="text-muted-foreground">Memuat ayat...</p>
                   </div>
                 </CardContent>
-              </Card> : <AyahSelector />}
+              </Card> : <AyahSelector />)}
             
             <StartButton />
           </div>

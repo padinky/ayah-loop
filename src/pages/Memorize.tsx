@@ -4,6 +4,7 @@ import { useQuranStore } from "../store/quranStore";
 import { quranApi } from "../services/quranApi";
 import { AyahDisplay } from "../components/AyahDisplay";
 import { AudioPlayer } from "../components/AudioPlayer";
+import { YouTubeLoopPlayer } from "../components/YouTubeLoopPlayer";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +17,7 @@ const Memorize = () => {
   const navigate = useNavigate();
   const ayahsDisplayRef = useRef<HTMLDivElement>(null);
   const { 
+    sessionMode,
     selectedSurah, 
     selectedReciter,
     ayahs, 
@@ -24,18 +26,21 @@ const Memorize = () => {
     isPlaying, 
     repeatConfig,
     currentRepeat,
-    setAyahs
+    youtubeLinks
   } = useQuranStore();
 
   useEffect(() => {
-    if (!selectedSurah || selectedAyahs.length === 0) {
+    if (sessionMode === "quran" && (!selectedSurah || selectedAyahs.length === 0)) {
       navigate('/');
     }
-  }, [selectedSurah, selectedAyahs, navigate]);
+    if (sessionMode === "youtube" && youtubeLinks.length === 0) {
+      navigate('/');
+    }
+  }, [sessionMode, selectedSurah, selectedAyahs, youtubeLinks, navigate]);
 
   // Scroll to ayahs display section when page loads
   useEffect(() => {
-    if (selectedSurah && selectedAyahs.length > 0) {
+    if (sessionMode === "quran" && selectedSurah && selectedAyahs.length > 0) {
       setTimeout(() => {
         ayahsDisplayRef.current?.scrollIntoView({ 
           behavior: 'smooth', 
@@ -43,10 +48,14 @@ const Memorize = () => {
         });
       }, 300);
     }
-  }, [selectedSurah, selectedAyahs]);
+  }, [sessionMode, selectedSurah, selectedAyahs]);
 
 
-  if (!selectedSurah || selectedAyahs.length === 0) {
+  if (sessionMode === "quran" && (!selectedSurah || selectedAyahs.length === 0)) {
+    return null;
+  }
+
+  if (sessionMode === "youtube" && youtubeLinks.length === 0) {
     return null;
   }
 
@@ -57,10 +66,11 @@ const Memorize = () => {
   const currentAyahData = selectedAyahsData.find(ayah => 
     ayah.numberInSurah === currentAyah
   );
+  const isYouTubeMode = sessionMode === "youtube";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-islamic-green-light/10 to-background">
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <div className={`container mx-auto px-4 py-6 ${isYouTubeMode ? "max-w-3xl" : "max-w-6xl"}`}>
         {/* Header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
           <div className="flex items-center gap-4">
@@ -79,11 +89,11 @@ const Memorize = () => {
               </div>
               <div className="flex items-baseline gap-3">
                 <h1 className="text-2xl font-bold text-primary">
-                  {selectedSurah.englishName}
+                  {sessionMode === "quran" ? selectedSurah?.englishName : "Pengulangan dari YouTube"}
                 </h1>
-                <p className="text-sm text-muted-foreground arabic-text text-lg">
-                  {selectedSurah.name}
-                </p>
+                {sessionMode === "quran" && <p className="text-sm text-muted-foreground arabic-text text-lg">
+                    {selectedSurah?.name}
+                  </p>}
               </div>
             </div>
           </div>
@@ -92,58 +102,48 @@ const Memorize = () => {
             <div className="flex items-center gap-2">
               <Target className="h-4 w-4 text-islamic-gold" />
               <Badge variant="outline">
-                {selectedAyahs.length} Ayat Terpilih
+                {sessionMode === "quran" ? `${selectedAyahs.length} Ayat Terpilih` : `${youtubeLinks.length} Link Terpilih`}
               </Badge>
             </div>
             <ThemeToggle />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className={isYouTubeMode ? "max-w-2xl mx-auto" : "grid grid-cols-1 lg:grid-cols-3 gap-6"}>
           {/* Controls - Fixed position */}
-          <div className="lg:col-span-1">
+          <div className={isYouTubeMode ? "" : "lg:col-span-1"}>
             <div className="lg:sticky lg:top-6 space-y-6">
-              <AudioPlayer />
-              <ReciterSelector showResetButton={true} />
+              {sessionMode === "quran" ? <>
+                  <AudioPlayer />
+                  <ReciterSelector showResetButton={true} />
+                </> : <YouTubeLoopPlayer />}
             </div>
           </div>
 
           {/* Ayahs Display */}
-          <div ref={ayahsDisplayRef} className="lg:col-span-2">
-            <Card className="shadow-peaceful">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="text-primary">&nbsp;</span>
-                  {currentAyahData && (
-                    <Badge className="bg-gradient-to-r from-primary to-primary-glow">
-                      Saat Ini: Ayat {currentAyahData.numberInSurah}
-                    </Badge>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <ScrollArea className="h-[70vh]">
-                  <div className="space-y-4 p-6">
-                    {selectedAyahsData.map((ayah) => {
-                      const isActive = currentAyah === ayah.numberInSurah;
-                      const ayahRepeats = repeatConfig.ayahs[ayah.numberInSurah] || 1;
-                      
-                      return (
-                        <AyahDisplay
-                          key={ayah.numberInSurah}
-                          ayah={ayah}
-                          isActive={isActive}
-                          isPlaying={isActive && isPlaying}
-                          currentRepeat={isActive ? currentRepeat : 0}
-                          totalRepeats={ayahRepeats}
-                        />
-                      );
-                    })}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-          </div>
+          {sessionMode === "quran" && <div ref={ayahsDisplayRef} className="lg:col-span-2">
+              <Card className="shadow-peaceful">
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span className="text-primary">&nbsp;</span>
+                    {currentAyahData && <Badge className="bg-gradient-to-r from-primary to-primary-glow">
+                        Saat Ini: Ayat {currentAyahData.numberInSurah}
+                      </Badge>}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <ScrollArea className="h-[70vh]">
+                    <div className="space-y-4 p-6">
+                      {selectedAyahsData.map((ayah) => {
+                    const isActive = currentAyah === ayah.numberInSurah;
+                    const ayahRepeats = repeatConfig.ayahs[ayah.numberInSurah] || 1;
+                    return <AyahDisplay key={ayah.numberInSurah} ayah={ayah} isActive={isActive} isPlaying={isActive && isPlaying} currentRepeat={isActive ? currentRepeat : 0} totalRepeats={ayahRepeats} />;
+                  })}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            </div>}
         </div>
 
         {/* Footer */}
