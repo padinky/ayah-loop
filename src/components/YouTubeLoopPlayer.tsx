@@ -4,13 +4,14 @@ import { buildYouTubeEmbedUrl } from "../utils/youtube";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, RotateCcw, SkipForward, Youtube } from "lucide-react";
+import { CheckCircle, Play, RotateCcw, SkipForward, Youtube } from "lucide-react";
 
 declare global {
   interface YouTubePlayer {
     playVideo: () => void;
     loadVideoById: (videoId: string) => void;
     seekTo: (seconds: number, allowSeekAhead: boolean) => void;
+    getPlayerState: () => number;
     destroy: () => void;
   }
 
@@ -23,6 +24,7 @@ declare global {
       Player: new (target: HTMLElement, options: unknown) => YouTubePlayer;
       PlayerState: {
         ENDED: number;
+        PLAYING: number;
       };
     };
     onYouTubeIframeAPIReady?: () => void;
@@ -71,6 +73,7 @@ export const YouTubeLoopPlayer = () => {
   } = useQuranStore();
   const [isCompleted, setIsCompleted] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [needsManualStart, setNeedsManualStart] = useState(false);
   const [videoTitle, setVideoTitle] = useState<string>("");
   const playerInstanceRef = useRef<YouTubePlayer | null>(null);
   const iframeContainerRef = useRef<HTMLDivElement>(null);
@@ -172,7 +175,9 @@ export const YouTubeLoopPlayer = () => {
     if (!currentLink || !iframeContainerRef.current) return;
 
     let isMounted = true;
+    let autoplayCheckTimeout: number | null = null;
     setIsReady(false);
+    setNeedsManualStart(false);
 
     ensureYouTubeApi().then(() => {
       if (!isMounted || !iframeContainerRef.current || !window.YT?.Player) return;
@@ -193,8 +198,17 @@ export const YouTubeLoopPlayer = () => {
           onReady: () => {
             setIsReady(true);
             playerInstanceRef.current?.playVideo();
+            autoplayCheckTimeout = window.setTimeout(() => {
+              const state = playerInstanceRef.current?.getPlayerState?.();
+              if (window.YT && state !== window.YT.PlayerState.PLAYING) {
+                setNeedsManualStart(true);
+              }
+            }, 900);
           },
           onStateChange: (event: YouTubePlayerEvent) => {
+            if (window.YT && event.data === window.YT.PlayerState.PLAYING) {
+              setNeedsManualStart(false);
+            }
             if (window.YT && event.data === window.YT.PlayerState.ENDED) {
               moveNext();
             }
@@ -205,6 +219,9 @@ export const YouTubeLoopPlayer = () => {
 
     return () => {
       isMounted = false;
+      if (autoplayCheckTimeout) {
+        window.clearTimeout(autoplayCheckTimeout);
+      }
       if (playerInstanceRef.current?.destroy) {
         playerInstanceRef.current.destroy();
         playerInstanceRef.current = null;
@@ -281,6 +298,24 @@ export const YouTubeLoopPlayer = () => {
 
         {!isReady && (
           <p className="text-xs text-muted-foreground">Menyiapkan pemutar YouTube...</p>
+        )}
+
+        {needsManualStart && (
+          <div className="rounded-md border border-primary/30 bg-primary/5 p-3 space-y-2">
+            <p className="text-xs text-muted-foreground">
+              Browser mobile biasanya memblokir autoplay. Ketuk tombol ini untuk mulai.
+            </p>
+            <Button
+              className="w-full"
+              onClick={() => {
+                playerInstanceRef.current?.playVideo();
+                setNeedsManualStart(false);
+              }}
+            >
+              <Play className="h-4 w-4 mr-2" />
+              Mulai Putar
+            </Button>
+          </div>
         )}
 
         <div className="flex justify-end">
