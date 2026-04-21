@@ -123,7 +123,7 @@ const Home = () => {
             </button>
             <Info className="h-4 w-4" />
             <AlertDescription className="text-muted-foreground text-sm sm:text-base">
-              Pilih surah, pilih ayat yang ingin Anda hafal, atur preferensi pengulangan, dan mulai perjalanan spiritual Anda dengan panduan hafalan audio. Semoga Allah mudahkan untuk Anda. Aamiin.
+              Pilih surah, pilih ayat yang ingin Anda hafal, atur preferensi pengulangan, dan mulai perjalanan hafalan Al-Qur'an Anda dengan pengulangan audio. Semoga Allah mudahkan. Aamiin.
             </AlertDescription>
           </Alert>
         )}
