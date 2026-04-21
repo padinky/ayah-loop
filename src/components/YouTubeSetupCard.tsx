@@ -116,6 +116,15 @@ export const YouTubeSetupCard = () => {
     });
   };
 
+  const updateLinkLoopCount = (linkId: string, nextValue: number) => {
+    const safeValue = Math.max(1, nextValue);
+    setYouTubeLinks(
+      youtubeLinks.map((item) =>
+        item.id === linkId ? { ...item, loopCount: safeValue } : item
+      )
+    );
+  };
+
   return (
     <Card className="shadow-peaceful">
       <CardHeader>
@@ -214,21 +223,34 @@ export const YouTubeSetupCard = () => {
                     <Label htmlFor={`loop-${link.id}`} className="text-xs text-muted-foreground">
                       Loop link ini
                     </Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => updateLinkLoopCount(link.id, link.loopCount - 1)}
+                    >
+                      -
+                    </Button>
                     <Input
                       id={`loop-${link.id}`}
                       type="number"
                       min={1}
                       value={link.loopCount}
                       onChange={(event) => {
-                        const next = Math.max(1, Number(event.target.value) || 1);
-                        setYouTubeLinks(
-                          youtubeLinks.map((item) =>
-                            item.id === link.id ? { ...item, loopCount: next } : item
-                          )
-                        );
+                        updateLinkLoopCount(link.id, Number(event.target.value) || 1);
                       }}
-                      className="w-24"
+                      className="w-20 text-center"
                     />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => updateLinkLoopCount(link.id, link.loopCount + 1)}
+                    >
+                      +
+                    </Button>
                     <span className="text-xs text-muted-foreground">kali</span>
                   </div>
                 </div>
@@ -239,14 +261,34 @@ export const YouTubeSetupCard = () => {
 
         <div className="space-y-2">
           <Label htmlFor="session-loop">Loop sesi (ulang seluruh daftar)</Label>
-          <Input
-            id="session-loop"
-            type="number"
-            min={1}
-            value={youtubeSessionLoops}
-            onChange={(event) => setYouTubeSessionLoops(Math.max(1, Number(event.target.value) || 1))}
-            className="w-32"
-          />
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setYouTubeSessionLoops(Math.max(1, youtubeSessionLoops - 1))}
+            >
+              -
+            </Button>
+            <Input
+              id="session-loop"
+              type="number"
+              min={1}
+              value={youtubeSessionLoops}
+              onChange={(event) => setYouTubeSessionLoops(Math.max(1, Number(event.target.value) || 1))}
+              className="w-24 text-center"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setYouTubeSessionLoops(youtubeSessionLoops + 1)}
+            >
+              +
+            </Button>
+          </div>
           <p className="text-xs text-muted-foreground">
             Total putar per sesi: {totalPlaysPerSession} | Target putar keseluruhan:{" "}
             {totalPlaysPerSession * youtubeSessionLoops}
