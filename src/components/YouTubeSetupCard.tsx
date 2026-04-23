@@ -169,7 +169,7 @@ export const YouTubeSetupCard = () => {
               Daftar masih kosong. Tambahkan data di `src/data/ustHanifPlaylist.ts`.
             </p>
           ) : (
-            <div className="space-y-2">
+            <div className="max-h-64 space-y-2 overflow-y-auto pr-1">
               {ustHanifPlaylist.map((item) => {
                 const videoId = extractYouTubeVideoId(item.url);
                 const alreadyAdded = videoId ? youtubeLinks.some((link) => link.videoId === videoId) : false;
