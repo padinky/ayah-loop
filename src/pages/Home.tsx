@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { useQuranStore } from "../store/quranStore";
+import { Link, useNavigate } from "react-router-dom";
+import { useQuranStore, type Surah } from "../store/quranStore";
 import { quranApi } from "../services/quranApi";
 import { SurahSelector } from "../components/SurahSelector";
 import { AyahSelector } from "../components/AyahSelector";
@@ -14,7 +14,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Info, X } from "lucide-react";
+import { ChevronRight, Info, Sparkles, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 const Home = () => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const Home = () => {
 
     reloadAyahsWithNewReciter();
   }, [sessionMode, selectedReciter, selectedSurah, setAyahs]);
-  const handleSurahSelect = async (surah: any) => {
+  const handleSurahSelect = async (surah: Surah) => {
     // Reset selections when changing surah
     useQuranStore.getState().setSelectedSurah(surah);
     useQuranStore.setState({
@@ -107,6 +107,10 @@ const Home = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
+            <Button variant="outline" size="sm" onClick={() => navigate('/sambung-ayat')} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3">
+              <Sparkles className="h-4 w-4" />
+              <span className="hidden sm:inline">Sambung Ayat</span>
+            </Button>
             <Button variant="ghost" size="sm" onClick={() => navigate('/about')} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3">
               <Info className="h-4 w-4" />
               <span className="hidden sm:inline">Tentang</span>
@@ -152,6 +156,26 @@ const Home = () => {
             </TabsList>
           </Tabs>
         </div>
+
+        <Card className="mb-6 border-primary/20 bg-primary/5 shadow-peaceful">
+          <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="space-y-1 min-w-0">
+              <p className="font-semibold text-primary flex items-center gap-2">
+                <Sparkles className="h-4 w-4 shrink-0" />
+                Latihan #SambungAyat
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Pilih beberapa surah, dapatkan ayat acak, lalu sambung ayat berikutnya dari hafalan Anda.
+              </p>
+            </div>
+            <Button asChild variant="default" className="shrink-0 w-full sm:w-auto">
+              <Link to="/sambung-ayat" className="inline-flex items-center justify-center gap-1">
+                Buka mode ini
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
 
         <div className="lg:hidden">
           {sessionMode === "quran" ? <MobileWizard /> : <div className="space-y-6">
