@@ -14,7 +14,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronRight, Info, Sparkles, X } from "lucide-react";
+import { ChevronRight, Headphones, Info, Link2, Sparkles, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 const Home = () => {
   const navigate = useNavigate();
@@ -157,25 +157,65 @@ const Home = () => {
           </Tabs>
         </div>
 
-        <Card className="mb-6 border-primary/20 bg-primary/5 shadow-peaceful">
-          <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="space-y-1 min-w-0">
-              <p className="font-semibold text-primary flex items-center gap-2">
-                <Sparkles className="h-4 w-4 shrink-0" />
-                Latihan #SambungAyat
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Pilih beberapa surah, dapatkan ayat acak, lalu sambung ayat berikutnya dari hafalan Anda.
-              </p>
-            </div>
-            <Button asChild variant="default" className="shrink-0 w-full sm:w-auto">
-              <Link to="/sambung-ayat" className="inline-flex items-center justify-center gap-1">
-                Buka mode ini
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="mb-6 grid gap-4 sm:grid-cols-1">
+          <Card className="border-primary/20 bg-primary/5 shadow-peaceful">
+            <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="space-y-1 min-w-0">
+                <p className="font-semibold text-primary flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 shrink-0" />
+                  Latihan #SambungAyat
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Sambung ayat berikutnya dalam satu surah (soal acak).
+                </p>
+              </div>
+              <Button asChild variant="default" className="shrink-0 w-full sm:w-auto">
+                <Link to="/sambung-ayat" className="inline-flex items-center justify-center gap-1">
+                  Buka
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+          <Card className="border-amber-500/25 bg-amber-500/5 shadow-peaceful">
+            <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="space-y-1 min-w-0">
+                <p className="font-semibold text-primary flex items-center gap-2">
+                  <Link2 className="h-4 w-4 shrink-0" />
+                  Latihan #SambungSurat
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Akhir surah → awal surah berikutnya dalam urutan Mushaf.
+                </p>
+              </div>
+              <Button asChild variant="secondary" className="shrink-0 w-full sm:w-auto">
+                <Link to="/sambung-surat" className="inline-flex items-center justify-center gap-1">
+                  Buka
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+          <Card className="border-primary/20 bg-muted/30 shadow-peaceful">
+            <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="space-y-1 min-w-0">
+                <p className="font-semibold text-primary flex items-center gap-2">
+                  <Headphones className="h-4 w-4 shrink-0" />
+                  #Murajaah Quran
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Putar semua ayat surah pilihan berurutan (nomor surah naik), dengan ulang sesi.
+                </p>
+              </div>
+              <Button asChild variant="outline" className="shrink-0 w-full sm:w-auto">
+                <Link to="/murajaah" className="inline-flex items-center justify-center gap-1">
+                  Buka
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
 
         <div className="lg:hidden">
           {sessionMode === "quran" ? <MobileWizard /> : <div className="space-y-6">

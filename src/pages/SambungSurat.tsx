@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
   Info,
-  Lightbulb,
   RotateCcw,
   Shuffle,
   SkipForward,
@@ -14,18 +13,18 @@ import {
 } from "lucide-react";
 import { quranApi } from "@/services/quranApi";
 import { useQuranStore, type Ayah, type Surah } from "@/store/quranStore";
-import { useSambungAyatStore } from "@/store/sambungAyatStore";
+import { useSambungSuratStore } from "@/store/sambungSuratStore";
 import {
-  buildAyahMap,
   eligibleSurahNumbers,
   pickRandomRound,
-} from "@/lib/sambungAyatRound";
+} from "@/lib/sambungSuratRound";
+import { buildAyahMap } from "@/lib/ayahMap";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ReciterSelector } from "@/components/ReciterSelector";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { SurahMultiSelect } from "@/components/SurahMultiSelect";
-import { combinedSurahQueryKey, SURAH_STALE_TIME } from "@/lib/surahQueryKeys";
+import { SURAH_STALE_TIME } from "@/lib/surahQueryKeys";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -38,35 +37,12 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
-const NEXT_AYAH_HINT_PREFIX_LENGTH = 16;
-
-type NextAyahHintResult =
-  | { kind: "empty" }
-  | { kind: "tooShort" }
-  | { kind: "partial"; preview: string };
-
-/**
- * Builds hint text that never equals the full next ayah: at least one grapheme
- * stays hidden when the ayah has more than one unit (Unicode code points here).
- */
-function nextAyahTextHint(text: string, maxGraphemes: number): NextAyahHintResult {
-  const chars = [...text];
-  const len = chars.length;
-  if (len === 0) return { kind: "empty" };
-  if (len === 1) return { kind: "tooShort" };
-  const visible = Math.min(maxGraphemes, len - 1);
-  return {
-    kind: "partial",
-    preview: `${chars.slice(0, visible).join("")} …`,
-  };
-}
-
 function surahLabel(meta: Surah | undefined) {
   if (!meta) return "";
   return `${meta.number}. ${meta.englishName}`;
 }
 
-const SambungAyat = () => {
+const SambungSurat = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const selectedReciter = useQuranStore((s) => s.selectedReciter);
@@ -81,11 +57,10 @@ const SambungAyat = () => {
     setRound,
     setRevealed,
     resetRoundUi,
-  } = useSambungAyatStore();
+  } = useSambungSuratStore();
 
   const [practiceStarted, setPracticeStarted] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [hintDialogOpen, setHintDialogOpen] = useState(false);
   const [showDisclaimerAlert, setShowDisclaimerAlert] = useState(true);
   const [showCaraMain, setShowCaraMain] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -97,7 +72,7 @@ const SambungAyat = () => {
   const roundKey = useMemo(
     () =>
       round != null
-        ? `${round.surahNumber}:${round.promptNumberInSurah}`
+        ? `${round.promptSurahNumber}:${round.answerSurahNumber}`
         : null,
     [round]
   );
@@ -109,11 +84,28 @@ const SambungAyat = () => {
       staleTime: 1000 * 60 * 60 * 24,
     });
 
-  const roundSurahQuery = useQuery({
+  const roundDataQuery = useQuery({
     queryKey: round
-      ? combinedSurahQueryKey(round.surahNumber, reciterId)
-      : ["surah", "combined", "idle"],
-    queryFn: () => quranApi.getCombinedSurahData(round!.surahNumber, reciterId),
+      ? ([
+          "surah",
+          "combined",
+          "sambungSurat",
+          round.promptSurahNumber,
+          round.answerSurahNumber,
+          reciterId,
+        ] as const)
+      : (["surah", "combined", "sambungSurat", "idle"] as const),
+    queryFn: async () => {
+      const prompt = await quranApi.getCombinedSurahData(
+        round!.promptSurahNumber,
+        reciterId
+      );
+      const answer = await quranApi.getCombinedSurahData(
+        round!.answerSurahNumber,
+        reciterId
+      );
+      return { prompt, answer };
+    },
     enabled: practiceStarted && round != null,
     staleTime: SURAH_STALE_TIME,
   });
@@ -134,17 +126,17 @@ const SambungAyat = () => {
     [selectedSurahNumbers, surahsMeta]
   );
 
-  const roundAyahs = roundSurahQuery.data;
-  const roundLoading = roundSurahQuery.isPending || roundSurahQuery.isFetching;
-  const roundError = roundSurahQuery.isError;
-  const roundReady = roundSurahQuery.isSuccess && roundAyahs != null;
+  const roundData = roundDataQuery.data;
+  const roundLoading = roundDataQuery.isPending || roundDataQuery.isFetching;
+  const roundError = roundDataQuery.isError;
+  const roundReady = roundDataQuery.isSuccess && roundData != null;
 
   const startPractice = useCallback(() => {
     if (eligibleSelected.length === 0) {
       toast({
         title: "Pilihan belum valid",
         description:
-          "Pilih minimal satu surah yang memiliki lebih dari satu ayat (contoh: Al-Kawthar hanya satu ayat, tidak dipakai di mode ini).",
+          "Pilih minimal satu surah yang bukan An-Nas (114), karena soal membutuhkan surah berikutnya dalam urutan Mushaf.",
         variant: "destructive",
       });
       return;
@@ -174,20 +166,18 @@ const SambungAyat = () => {
     return m;
   }, [surahsMeta]);
 
-  const currentMeta = round ? metaByNumber.get(round.surahNumber) : undefined;
+  const promptMeta = round ? metaByNumber.get(round.promptSurahNumber) : undefined;
+  const answerMeta = round ? metaByNumber.get(round.answerSurahNumber) : undefined;
+
   const promptAyah = useMemo(() => {
-    if (!round || !roundAyahs) return undefined;
-    return buildAyahMap(roundAyahs).get(round.promptNumberInSurah);
-  }, [round, roundAyahs]);
+    if (!round || !roundData || !promptMeta) return undefined;
+    return buildAyahMap(roundData.prompt).get(promptMeta.numberOfAyahs);
+  }, [round, roundData, promptMeta]);
 
   const nextAyah = useMemo(() => {
-    if (!round || !roundAyahs) return undefined;
-    return buildAyahMap(roundAyahs).get(round.promptNumberInSurah + 1);
-  }, [round, roundAyahs]);
-
-  useEffect(() => {
-    setHintDialogOpen(false);
-  }, [roundKey]);
+    if (!round || !roundData) return undefined;
+    return buildAyahMap(roundData.answer).get(1);
+  }, [round, roundData]);
 
   useEffect(() => {
     if (!roundKey || !promptAyah?.audio || !audioRef.current) return;
@@ -233,7 +223,6 @@ const SambungAyat = () => {
     answerAutoplayRef.current?.pause();
     answerAutoplayRef.current = null;
     answerAudioRef.current?.pause();
-    setHintDialogOpen(false);
     nextRound();
   }, [nextRound]);
 
@@ -287,7 +276,6 @@ const SambungAyat = () => {
   }, [nextAyah?.audio, toast]);
 
   const openAnswerDialog = useCallback(() => {
-    setHintDialogOpen(false);
     const url = nextAyah?.audio;
     if (url) {
       answerAutoplayRef.current?.pause();
@@ -369,12 +357,12 @@ const SambungAyat = () => {
               </div>
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold text-primary">
-                  #SambungAyat
+                  #SambungSurat
                 </h1>
                 <p className="text-xs text-muted-foreground sm:text-sm">
                   {practiceStarted
-                    ? "Mode kuis — sambung ayat berikutnya dalam satu surah"
-                    : "Latihan sambung ayat berikutnya dalam satu surah"}
+                    ? "Mode kuis — sambung awal surah berikutnya setelah akhir surah"
+                    : "Latihan sambung awal surah berikutnya setelah akhir surah"}
                 </p>
               </div>
             </div>
@@ -403,9 +391,8 @@ const SambungAyat = () => {
             </button>
             <Info className="h-4 w-4" />
             <AlertDescription className="text-sm text-muted-foreground">
-              Aplikasi tidak bisa menilai hafalan Anda. Gunakan hint atau jawaban
-              untuk membandingkan dengan hafalan, atau lanjut ke soal berikutnya jika
-              sudah yakin.
+              Aplikasi tidak bisa menilai hafalan Anda. Gunakan jawaban untuk
+              membandingkan dengan hafalan, atau lanjut ke soal berikutnya jika sudah yakin.
             </AlertDescription>
           </Alert>
         )}
@@ -420,8 +407,8 @@ const SambungAyat = () => {
               onSearchChange={setSearchTerm}
               onToggle={toggleSurah}
               onClear={clearSelection}
-              isSurahDisabled={(s) => s.numberOfAyahs < 2}
-              disabledHint={() => "tidak dipakai di mode ini"}
+              isSurahDisabled={(s) => s.number >= 114}
+              disabledHint={() => "tidak ada surah berikutnya (An-Nas)"}
             />
 
             <ReciterSelector showResetButton={false} />
@@ -432,7 +419,7 @@ const SambungAyat = () => {
               disabled={eligibleSelected.length === 0}
             >
               <Shuffle className="h-5 w-5 mr-2" />
-              Mulai Latihan #SambungAyat
+              Mulai Latihan #SambungSurat
             </Button>
           </>
         ) : (
@@ -468,7 +455,7 @@ const SambungAyat = () => {
               </Card>
             )}
 
-            {roundReady && round && currentMeta && promptAyah && (
+            {roundReady && round && promptMeta && answerMeta && promptAyah && (
               <>
               <div className="relative">
                 <div
@@ -488,20 +475,20 @@ const SambungAyat = () => {
                             Soal
                           </Badge>
                           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                            Sambung ayat berikutnya
+                            Akhir surah → awal surah berikutnya
                           </span>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-2 shrink-0">
                         <div
                           className="rounded-xl border-2 border-primary/25 bg-gradient-to-br from-muted/80 to-background px-4 py-2 text-center shadow-inner min-w-[5.5rem]"
-                          title="Nomor ayat dalam surah ini yang menjadi teks soal (ayat yang tampil di kartu). Yang harus Anda sambungkan adalah ayat berikutnya setelah ini."
+                          title="Ayat terakhir surah ini menjadi soal. Jawaban: ayat pertama surah berikutnya dalam urutan Mushaf."
                         >
                           <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                            Ayat soal
+                            Akhir surah
                           </p>
                           <p className="text-2xl font-black tabular-nums text-primary leading-none">
-                            {round.promptNumberInSurah}
+                            {promptMeta.numberOfAyahs}
                           </p>
                         </div>
                       </div>
@@ -518,11 +505,10 @@ const SambungAyat = () => {
                         </button>
                         <p className="text-sm text-muted-foreground">
                           <span className="font-semibold text-foreground">Cara main: </span>
-                          Audio soal diputar otomatis jika tersedia. Satu baris berisi{" "}
-                          <span className="font-medium text-foreground">Ulangi audio</span> (jika ada) dan{" "}
-                          <span className="font-medium text-foreground">Tampilkan Hint</span>. Di bawahnya:{" "}
-                          <span className="font-medium text-foreground">Tampilkan Jawaban</span> membuka teks
-                          ayat berikutnya di jendela untuk dibandingkan;{" "}
+                          Audio soal diputar otomatis jika tersedia. Gunakan{" "}
+                          <span className="font-medium text-foreground">Ulangi audio</span> bila perlu.{" "}
+                          <span className="font-medium text-foreground">Tampilkan Jawaban</span> membuka ayat
+                          pertama surah berikutnya;{" "}
                           <span className="font-medium text-foreground">Soal berikutnya</span> langsung ke soal
                           baru tanpa membuka jawaban bila Anda sudah yakin.
                         </p>
@@ -566,19 +552,6 @@ const SambungAyat = () => {
                           Ulangi audio
                         </Button>
                       ) : null}
-                      {!revealed ? (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="border-2 border-dashed border-islamic-gold/50 bg-islamic-gold/5 font-semibold hover:bg-islamic-gold/10"
-                          disabled={!nextAyah?.text}
-                          onClick={() => setHintDialogOpen(true)}
-                        >
-                          <Lightbulb className="h-4 w-4 mr-2 text-islamic-gold shrink-0" />
-                          Tampilkan Hint
-                        </Button>
-                      ) : null}
                     </div>
 
                     {!revealed ? (
@@ -608,94 +581,12 @@ const SambungAyat = () => {
               </div>
 
               <Dialog
-                open={hintDialogOpen}
-                onOpenChange={setHintDialogOpen}
-              >
-                <DialogContent className="max-h-[90dvh] max-w-lg gap-0 overflow-hidden p-0 sm:max-w-xl">
-                  <div className="max-h-[90dvh] overflow-y-auto p-6 sm:p-8">
-                    <DialogHeader className="space-y-2 text-left">
-                      <div className="flex flex-wrap items-center gap-2 pr-8">
-                        <Badge className="border border-amber-500/40 bg-amber-500/15 text-amber-950 dark:text-amber-100 font-bold uppercase tracking-widest text-[10px]">
-                          Hint
-                        </Badge>
-                        <DialogTitle className="text-base font-semibold text-foreground sm:text-lg">
-                          Potongan awal ayat berikutnya
-                        </DialogTitle>
-                      </div>
-                      <DialogDescription className="text-left">
-                        Hanya sebagian awal teks Arab — minimal satu bagian disembunyikan agar tidak sama dengan ayat lengkap. Tutup jendela ini lalu lanjutkan hafalan Anda.
-                      </DialogDescription>
-                    </DialogHeader>
-                    {(() => {
-                      if (!nextAyah?.text) {
-                        return (
-                          <p className="mt-6 text-sm text-muted-foreground">
-                            Hint tidak tersedia untuk soal ini.
-                          </p>
-                        );
-                      }
-                      const hint = nextAyahTextHint(
-                        nextAyah.text,
-                        NEXT_AYAH_HINT_PREFIX_LENGTH
-                      );
-                      if (hint.kind === "empty") {
-                        return (
-                          <p className="mt-6 text-sm text-muted-foreground">
-                            Hint tidak tersedia untuk soal ini.
-                          </p>
-                        );
-                      }
-                      if (hint.kind === "tooShort") {
-                        return (
-                          <p className="mt-6 text-sm leading-relaxed text-muted-foreground rounded-xl border border-amber-500/25 bg-amber-500/5 p-5">
-                            Ayat berikutnya terlalu pendek untuk petunjuk potongan: menampilkan
-                            sebagian saja akan sama dengan ayat utuh. Lanjutkan dari hafalan
-                            Anda, atau ketuk tombol di bawah untuk ayat lengkap.
-                          </p>
-                        );
-                      }
-                      return (
-                        <p className="mt-6 arabic-text text-2xl sm:text-3xl leading-relaxed text-right font-medium rounded-xl border-2 border-amber-500/25 bg-amber-500/5 p-5">
-                          {hint.preview}
-                        </p>
-                      );
-                    })()}
-                    {nextAyah ? (
-                      <div className="mt-6 space-y-2">
-                        <Button
-                          type="button"
-                          size="lg"
-                          className="w-full h-12 text-base font-bold uppercase tracking-wide bg-gradient-to-r from-primary via-primary to-primary-glow shadow-lg hover:opacity-95"
-                          onClick={openAnswerDialog}
-                        >
-                          Tampilkan Jawaban
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          className="w-full h-10 text-sm font-semibold text-muted-foreground border border-dashed border-muted-foreground/30"
-                          onClick={() => {
-                            setHintDialogOpen(false);
-                            skipToNextQuestion();
-                          }}
-                        >
-                          <SkipForward className="h-4 w-4 mr-2 shrink-0" />
-                          Soal berikutnya (tanpa buka jawaban)
-                        </Button>
-                      </div>
-                    ) : null}
-                  </div>
-                </DialogContent>
-              </Dialog>
-
-              <Dialog
                 open={revealed}
                 onOpenChange={(open) => {
                   if (!open) {
                     answerAutoplayRef.current?.pause();
                     answerAutoplayRef.current = null;
                     answerAudioRef.current?.pause();
-                    setHintDialogOpen(false);
                     setRevealed(false);
                   }
                 }}
@@ -709,11 +600,11 @@ const SambungAyat = () => {
                           Jawaban
                         </Badge>
                         <DialogTitle className="text-base font-semibold text-foreground sm:text-lg">
-                          Ayat berikutnya
+                          Awal surah berikutnya
                         </DialogTitle>
                       </div>
                       <DialogDescription className="text-left">
-                        {surahLabel(currentMeta)} — bandingkan dengan hafalan Anda. Audio ayat ini diputar otomatis bila tersedia; gunakan &quot;Ulangi audio&quot; jika perlu.
+                        {surahLabel(answerMeta)} — ayat 1. Bandingkan dengan hafalan Anda. Audio diputar otomatis bila tersedia; gunakan &quot;Ulangi audio&quot; jika perlu.
                       </DialogDescription>
                     </DialogHeader>
 
@@ -774,4 +665,4 @@ const SambungAyat = () => {
   );
 };
 
-export default SambungAyat;
+export default SambungSurat;

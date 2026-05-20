@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { fetchCombinedSurahQueued } from '@/lib/surahFetchQueue';
 import { Surah, Ayah, Reciter } from '../store/quranStore';
 
 const BASE_URL = 'https://api.alquran.cloud/v1';
@@ -75,11 +76,13 @@ export const quranApi = {
     audio: Ayah[];
   }> {
     try {
-      const [arabicRes, translationRes, audioRes] = await Promise.all([
-        axios.get<SurahResponse>(`${BASE_URL}/surah/${surahNumber}`),
-        axios.get<SurahResponse>(`${BASE_URL}/surah/${surahNumber}/id.indonesian`),
-        axios.get<SurahResponse>(`${BASE_URL}/surah/${surahNumber}/${reciterIdentifier}`)
-      ]);
+      const arabicRes = await axios.get<SurahResponse>(`${BASE_URL}/surah/${surahNumber}`);
+      const translationRes = await axios.get<SurahResponse>(
+        `${BASE_URL}/surah/${surahNumber}/id.indonesian`
+      );
+      const audioRes = await axios.get<SurahResponse>(
+        `${BASE_URL}/surah/${surahNumber}/${reciterIdentifier}`
+      );
 
       const arabic = arabicRes.data.data.ayahs.map(ayah => ({
         number: ayah.number,
@@ -107,13 +110,28 @@ export const quranApi = {
     }
   },
 
-  async getCombinedSurahData(surahNumber: number, reciterIdentifier?: string): Promise<Ayah[]> {
-    const { arabic, translation, audio } = await this.getSurahData(surahNumber, reciterIdentifier);
-    
+  async getCombinedSurahDataUncached(
+    surahNumber: number,
+    reciterIdentifier: string = 'ar.alafasy'
+  ): Promise<Ayah[]> {
+    const { arabic, translation, audio } = await this.getSurahData(
+      surahNumber,
+      reciterIdentifier
+    );
+
     return arabic.map((ayah, index) => ({
       ...ayah,
       translation: translation[index]?.text || '',
-      audio: audio[index]?.audio || ''
+      audio: audio[index]?.audio || '',
     }));
-  }
+  },
+
+  async getCombinedSurahData(
+    surahNumber: number,
+    reciterIdentifier: string = 'ar.alafasy'
+  ): Promise<Ayah[]> {
+    return fetchCombinedSurahQueued(surahNumber, reciterIdentifier, (n, r) =>
+      this.getCombinedSurahDataUncached(n, r)
+    );
+  },
 };

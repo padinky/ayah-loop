@@ -1,73 +1,39 @@
-# Welcome to your Lovable project
+# Ayah Loop (Hafalan)
 
-## Project info
+Web app untuk membantu **mengulang dan menghafal Al-Qur'an**: loop audio per ayat, mode YouTube, dan tiga latihan tambahan.
 
-**URL**: https://lovable.dev/projects/6520132d-da2e-4a34-9036-af9ddf46df82
+## Fitur
 
-## How can I edit this code?
+- **Mode Quran** — pilih surah, ayat, qari, pengulangan per ayat/blok; putar di halaman hafalan.
+- **Mode YouTube** — link dengan loop per video dan per sesi; playlist Ust. Hanif.
+- **#SambungAyat** — soal acak: sambung ayat berikutnya dalam satu surah.
+- **#SambungSurat** — akhir surah → awal surah berikutnya (urutan Mushaf).
+- **#Murajaah Quran** — putar semua ayat surah pilihan berurutan (nomor surah naik), dengan ulang sesi.
 
-There are several ways of editing your application.
+Permintaan API diatur antrean agar menghindari error 429 saat banyak surah dipilih.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/6520132d-da2e-4a34-9036-af9ddf46df82) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Pengembangan lokal
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+npm install
+npm run dev      # http://localhost:8080
+npm run build
+npm run lint
 ```
 
-**Edit a file directly in GitHub**
+## Dokumentasi untuk kontributor & AI
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| Dokumen | Isi |
+|---------|-----|
+| [AGENTS.md](./AGENTS.md) | Arsitektur, alur fitur, state, API, antrean fetch |
+| [.cursor/rules/ayah-loop.mdc](./.cursor/rules/ayah-loop.mdc) | Ringkasan untuk Cursor |
 
-**Use GitHub Codespaces**
+## Teknologi
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Vite, React, TypeScript, Tailwind CSS, shadcn/ui, Zustand, TanStack Query, React Router.
 
-## What technologies are used for this project?
+Data & audio: [Al-Qur'an Cloud API](https://alquran.cloud).
 
-This project is built with:
+## Deploy
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/6520132d-da2e-4a34-9036-af9ddf46df82) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Build statis: `npm run build`, host folder `dist/`.

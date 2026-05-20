@@ -1,0 +1,24 @@
+---
+description: Ayah Loop project context — routes, stores, APIs, conventions
+alwaysApply: true
+---
+
+# Ayah Loop
+
+Qur’an memorization PWA (Indonesian UI): loop audio, YouTube mode, **Sambung Ayat** `/sambung-ayat`, **Sambung Surat** `/sambung-surat`, **Murajaah** `/murajaah`.
+
+**Read first:** `AGENTS.md`.
+
+## Stack
+
+React 18 + Vite + TS + Tailwind + shadcn (`@/` → `src/`). Zustand per feature + `quranStore`. API: `quranApi` + `surahFetchQueue` (avoid 429). Query: `src/lib/queryClient.ts`.
+
+## Routes
+
+`/` → `/memorize` → drill pages → `/about`. Register above `*` in `App.tsx`.
+
+## Rules when editing
+
+- Indonesian UI copy; `font-arabic-quran` for Arabic.
+- Surah fetches via queued `getCombinedSurahData`; lazy/sequential loads in drills (no bulk parallel surah prefetch).
+- Round logic in `src/lib/*Round.ts`; do not merge Zustand stores casually.
