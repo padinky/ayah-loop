@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { useQuranStore, type Surah } from "../store/quranStore";
 import { quranApi } from "../services/quranApi";
 import { SurahSelector } from "../components/SurahSelector";
@@ -8,45 +7,58 @@ import { RangeRepeatControl } from "../components/RangeRepeatControl";
 import { ReciterSelector } from "../components/ReciterSelector";
 import { MobileWizard } from "../components/MobileWizard";
 import { StartButton } from "../components/StartButton";
-import { YouTubeSetupCard } from "../components/YouTubeSetupCard";
-import { ThemeToggle } from "../components/ThemeToggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronRight, Headphones, Info, Link2, Sparkles, X } from "lucide-react";
+import { Info, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-const Home = () => {
-  const navigate = useNavigate();
+
+const MENGHAFAL_INSTRUCTIONS_KEY = "ayah-loop-hide-menghafal-instructions";
+
+/** Menghafal — pilih ayat dan ulang dengan audio (route `/`) */
+const Menghafal = () => {
   const [loading, setLoading] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(true);
-  const {
-    sessionMode,
-    selectedSurah,
-    selectedReciter,
-    setSessionMode,
-    setAyahs,
-    resetMemorization
-  } = useQuranStore();
-  const {
-    toast
-  } = useToast();
+  const [showInstructions, setShowInstructions] = useState(false);
+  const { selectedSurah, selectedReciter, setSessionMode, setAyahs, resetMemorization } =
+    useQuranStore();
+  const { toast } = useToast();
   const rangeRepeatRef = useRef<HTMLDivElement>(null);
   const reciterSelectorRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    resetMemorization();
-  }, [resetMemorization]);
 
-  // Reload ayahs when reciter changes
+  useEffect(() => {
+    setSessionMode("quran");
+    resetMemorization();
+  }, [setSessionMode, resetMemorization]);
+
+  useEffect(() => {
+    try {
+      const hidden = localStorage.getItem(MENGHAFAL_INSTRUCTIONS_KEY);
+      setShowInstructions(hidden !== "1");
+    } catch {
+      setShowInstructions(true);
+    }
+  }, []);
+
+  const dismissInstructions = () => {
+    setShowInstructions(false);
+    try {
+      localStorage.setItem(MENGHAFAL_INSTRUCTIONS_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  };
+
   useEffect(() => {
     const reloadAyahsWithNewReciter = async () => {
-      if (sessionMode === "quran" && selectedSurah && selectedReciter) {
+      if (selectedSurah && selectedReciter) {
         setLoading(true);
         try {
-          const ayahsData = await quranApi.getCombinedSurahData(selectedSurah.number, selectedReciter.identifier);
+          const ayahsData = await quranApi.getCombinedSurahData(
+            selectedSurah.number,
+            selectedReciter.identifier
+          );
           setAyahs(ayahsData);
         } catch (error) {
-          console.error('Error reloading ayahs with new reciter:', error);
+          console.error("Error reloading ayahs with new reciter:", error);
         } finally {
           setLoading(false);
         }
@@ -54,206 +66,108 @@ const Home = () => {
     };
 
     reloadAyahsWithNewReciter();
-  }, [sessionMode, selectedReciter, selectedSurah, setAyahs]);
+  }, [selectedReciter, selectedSurah, setAyahs]);
+
   const handleSurahSelect = async (surah: Surah) => {
-    // Reset selections when changing surah
     useQuranStore.getState().setSelectedSurah(surah);
     useQuranStore.setState({
       selectedAyahs: [],
-      repeatConfig: {
-        ayahs: {},
-        range: 1
-      }
+      repeatConfig: { ayahs: {}, range: 1 },
     });
     setLoading(true);
     try {
-      const ayahsData = await quranApi.getCombinedSurahData(surah.number, selectedReciter?.identifier);
+      const ayahsData = await quranApi.getCombinedSurahData(
+        surah.number,
+        selectedReciter?.identifier
+      );
       setAyahs(ayahsData);
       toast({
         title: "Surah Berhasil Dimuat",
-        description: `${surah.englishName} dengan ${ayahsData.length} ayat siap untuk dipilih.`
+        description: `${surah.englishName} dengan ${ayahsData.length} ayat siap untuk dipilih.`,
       });
 
-      // Scroll to reciter selector section on mobile
       setTimeout(() => {
         if (window.innerWidth < 1024 && reciterSelectorRef.current) {
           reciterSelectorRef.current.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
+            behavior: "smooth",
+            block: "start",
           });
         }
       }, 100);
     } catch (error) {
-      console.error('Error loading surah:', error);
+      console.error("Error loading surah:", error);
       toast({
         title: "Gagal Memuat Surah",
         description: "Gagal memuat ayat. Silakan coba lagi.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
   };
-  return <div className="min-h-screen bg-gradient-to-br from-background via-islamic-green-light/10 to-background">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8 gap-4">
-          <div className="flex items-center gap-3 min-w-0 flex-1">
-            <div className="min-w-0">
-              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                Assalamu'alaykum, Penghafal Al-Qur'an!
-              </h1>
-              <p className="text-muted-foreground text-sm sm:text-base">Aplikasi Ini Membantu Mengulang Hafalan Anda</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <Button variant="outline" size="sm" onClick={() => navigate('/sambung-ayat')} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3">
-              <Sparkles className="h-4 w-4" />
-              <span className="hidden sm:inline">Sambung Ayat</span>
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/about')} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3">
-              <Info className="h-4 w-4" />
-              <span className="hidden sm:inline">Tentang</span>
-            </Button>
-            <ThemeToggle />
-          </div>
-        </div>
 
-        {/* Instruction Banner */}
-        {showInstructions && (
-          <Alert className="mb-8 bg-secondary/40 border-secondary/60 p-3 sm:p-4 pr-10 rounded-md shadow-peaceful relative">
-            <button
-              aria-label="Hide instructions"
-              className="absolute right-2 top-2 z-10 p-2 -m-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-foreground/5 active:bg-foreground/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 touch-manipulation"
-              onClick={() => setShowInstructions(false)}
-            >
-              <X className="h-5 w-5" />
-            </button>
-            <Info className="h-4 w-4" />
-            <AlertDescription className="text-muted-foreground text-sm sm:text-base">
-              Pilih surah, pilih ayat yang ingin Anda hafal, atur preferensi pengulangan, dan mulai perjalanan hafalan Al-Qur'an Anda dengan pengulangan audio. Semoga Allah mudahkan. Aamiin.
-            </AlertDescription>
-          </Alert>
-        )}
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-primary">Menghafal</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Pilih surah dan ayat, atur pengulangan, lalu mulai sesi hafalan
+        </p>
+      </div>
 
-        {/* Mobile Wizard */}
-        <div className="mb-6">
-          <Tabs
-            value={sessionMode}
-            onValueChange={(value) => {
-              setSessionMode(value as "quran" | "youtube");
-              resetMemorization();
-            }}
+      {showInstructions && (
+        <Alert className="bg-secondary/40 border-secondary/60 p-3 pr-10 relative">
+          <button
+            type="button"
+            aria-label="Sembunyikan petunjuk"
+            className="absolute right-2 top-2 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-foreground/5"
+            onClick={dismissInstructions}
           >
-            <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
-              <TabsTrigger value="quran">Quran</TabsTrigger>
-              <TabsTrigger value="youtube" className="gap-2">
-                <span>YouTube</span>
-                <span className="inline-flex h-5 items-center justify-center rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 px-2 text-[10px] font-bold leading-none text-amber-950 shadow-[0_0_10px_rgba(250,204,21,0.55)] animate-pulse">
-                  Baru
-                </span>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+            <X className="h-4 w-4" />
+          </button>
+          <Info className="h-4 w-4" />
+          <AlertDescription className="text-muted-foreground text-sm">
+            Pilih surah dan ayat yang ingin dihafal, atur jumlah pengulangan, lalu mulai.
+            Semoga Allah mudahkan.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <div className="lg:hidden">
+        <MobileWizard />
+      </div>
+
+      <div className="hidden lg:grid lg:grid-cols-2 gap-8">
+        <div className="space-y-6">
+          <SurahSelector onSurahSelect={handleSurahSelect} />
+          <div ref={reciterSelectorRef}>
+            <ReciterSelector />
+          </div>
+          {selectedSurah && (
+            <div ref={rangeRepeatRef}>
+              <RangeRepeatControl />
+            </div>
+          )}
         </div>
 
-        <div className="mb-6 grid gap-4 sm:grid-cols-1">
-          <Card className="border-primary/20 bg-primary/5 shadow-peaceful">
-            <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div className="space-y-1 min-w-0">
-                <p className="font-semibold text-primary flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 shrink-0" />
-                  Latihan #SambungAyat
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Sambung ayat berikutnya dalam satu surah (soal acak).
-                </p>
-              </div>
-              <Button asChild variant="default" className="shrink-0 w-full sm:w-auto">
-                <Link to="/sambung-ayat" className="inline-flex items-center justify-center gap-1">
-                  Buka
-                  <ChevronRight className="h-4 w-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card className="border-amber-500/25 bg-amber-500/5 shadow-peaceful">
-            <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div className="space-y-1 min-w-0">
-                <p className="font-semibold text-primary flex items-center gap-2">
-                  <Link2 className="h-4 w-4 shrink-0" />
-                  Latihan #SambungSurat
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Akhir surah → awal surah berikutnya dalam urutan Mushaf.
-                </p>
-              </div>
-              <Button asChild variant="secondary" className="shrink-0 w-full sm:w-auto">
-                <Link to="/sambung-surat" className="inline-flex items-center justify-center gap-1">
-                  Buka
-                  <ChevronRight className="h-4 w-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card className="border-primary/20 bg-muted/30 shadow-peaceful">
-            <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div className="space-y-1 min-w-0">
-                <p className="font-semibold text-primary flex items-center gap-2">
-                  <Headphones className="h-4 w-4 shrink-0" />
-                  #Murajaah Quran
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Putar semua ayat surah pilihan berurutan (nomor surah naik), dengan ulang sesi.
-                </p>
-              </div>
-              <Button asChild variant="outline" className="shrink-0 w-full sm:w-auto">
-                <Link to="/murajaah" className="inline-flex items-center justify-center gap-1">
-                  Buka
-                  <ChevronRight className="h-4 w-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="lg:hidden">
-          {sessionMode === "quran" ? <MobileWizard /> : <div className="space-y-6">
-              <YouTubeSetupCard />
-              <StartButton />
-            </div>}
-        </div>
-
-        {/* Desktop Layout */}
-        <div className="hidden lg:grid lg:grid-cols-2 gap-8">
-          {/* Left Column */}
-          <div className="space-y-6">
-            {sessionMode === "quran" ? <>
-                <SurahSelector onSurahSelect={handleSurahSelect} />
-                <div ref={reciterSelectorRef}>
-                  <ReciterSelector />
+        <div className="space-y-6">
+          {loading ? (
+            <Card className="shadow-peaceful">
+              <CardContent className="p-8">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+                  <p className="text-muted-foreground">Memuat ayat...</p>
                 </div>
-                {selectedSurah && <div ref={rangeRepeatRef}>
-                    <RangeRepeatControl />
-                  </div>}
-              </> : <YouTubeSetupCard />}
-          </div>
-
-          {/* Right Column */}
-          <div className="space-y-6">
-            {sessionMode === "quran" && (loading ? <Card className="shadow-peaceful">
-                <CardContent className="p-8">
-                  <div className="flex flex-col items-center gap-4">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                    <p className="text-muted-foreground">Memuat ayat...</p>
-                  </div>
-                </CardContent>
-              </Card> : <AyahSelector />)}
-            
-            <StartButton />
-          </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <AyahSelector />
+          )}
+          <StartButton />
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
-export default Home;
+
+export default Menghafal;

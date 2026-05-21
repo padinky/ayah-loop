@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useSambungPromptAudio } from "@/hooks/useSambungPromptAudio";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -6,7 +7,6 @@ import {
   Info,
   Lightbulb,
   RotateCcw,
-  Shuffle,
   SkipForward,
   Sparkles,
   Target,
@@ -20,8 +20,8 @@ import {
   eligibleSurahNumbers,
   pickRandomRound,
 } from "@/lib/sambungAyatRound";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { ReciterSelector } from "@/components/ReciterSelector";
+import { StartLatihanButton } from "@/components/StartLatihanButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { SurahMultiSelect } from "@/components/SurahMultiSelect";
@@ -139,23 +139,6 @@ const SambungAyat = () => {
   const roundError = roundSurahQuery.isError;
   const roundReady = roundSurahQuery.isSuccess && roundAyahs != null;
 
-  const startPractice = useCallback(() => {
-    if (eligibleSelected.length === 0) {
-      toast({
-        title: "Pilihan belum valid",
-        description:
-          "Pilih minimal satu surah yang memiliki lebih dari satu ayat (contoh: Al-Kawthar hanya satu ayat, tidak dipakai di mode ini).",
-        variant: "destructive",
-      });
-      return;
-    }
-    setShowCaraMain(true);
-    resetRoundUi();
-    const r = pickRandomRound(selectedSurahNumbers, surahsMeta);
-    if (r) setRound(r);
-    setPracticeStarted(true);
-  }, [eligibleSelected.length, resetRoundUi, selectedSurahNumbers, surahsMeta, setRound, toast]);
-
   useEffect(() => {
     if (!practiceStarted) {
       prevReciterId.current = reciterId;
@@ -185,29 +168,41 @@ const SambungAyat = () => {
     return buildAyahMap(roundAyahs).get(round.promptNumberInSurah + 1);
   }, [round, roundAyahs]);
 
+  const { noteGesture, playPrompt, promptAudioBlocked } = useSambungPromptAudio(
+    audioRef,
+    roundKey,
+    promptAyah?.audio
+  );
+
+  const startPractice = useCallback(() => {
+    if (eligibleSelected.length === 0) {
+      toast({
+        title: "Pilihan belum valid",
+        description:
+          "Pilih minimal satu surah yang memiliki lebih dari satu ayat (contoh: Al-Kawthar hanya satu ayat, tidak dipakai di mode ini).",
+        variant: "destructive",
+      });
+      return;
+    }
+    noteGesture();
+    setShowCaraMain(true);
+    resetRoundUi();
+    const r = pickRandomRound(selectedSurahNumbers, surahsMeta);
+    if (r) setRound(r);
+    setPracticeStarted(true);
+  }, [
+    eligibleSelected.length,
+    noteGesture,
+    resetRoundUi,
+    selectedSurahNumbers,
+    surahsMeta,
+    setRound,
+    toast,
+  ]);
+
   useEffect(() => {
     setHintDialogOpen(false);
   }, [roundKey]);
-
-  useEffect(() => {
-    if (!roundKey || !promptAyah?.audio || !audioRef.current) return;
-    const el = audioRef.current;
-    el.src = promptAyah.audio;
-    el.currentTime = 0;
-    const play = () => {
-      void el.play().catch(() => {
-        /* autoplay often blocked until gesture; user can tap Ulangi audio */
-      });
-    };
-    if (el.readyState >= 2) {
-      play();
-    } else {
-      el.addEventListener("canplay", play, { once: true });
-    }
-    return () => {
-      el.removeEventListener("canplay", play);
-    };
-  }, [roundKey, promptAyah?.audio]);
 
   useLayoutEffect(() => {
     if (!revealed || !nextAyah?.audio || !answerAudioRef.current) return;
@@ -230,12 +225,13 @@ const SambungAyat = () => {
   }, [selectedSurahNumbers, surahsMeta, setRound, toast]);
 
   const skipToNextQuestion = useCallback(() => {
+    noteGesture();
     answerAutoplayRef.current?.pause();
     answerAutoplayRef.current = null;
     answerAudioRef.current?.pause();
     setHintDialogOpen(false);
     nextRound();
-  }, [nextRound]);
+  }, [nextRound, noteGesture]);
 
   const backToSetup = () => {
     setPracticeStarted(false);
@@ -244,19 +240,18 @@ const SambungAyat = () => {
 
   const playPromptAudio = useCallback(() => {
     const url = promptAyah?.audio;
-    if (!url || !audioRef.current) return;
-    const el = audioRef.current;
-    el.pause();
-    el.src = url;
-    el.currentTime = 0;
-    void el.play().catch(() => {
-      toast({
-        title: "Audio tidak bisa diputar",
-        description: "Periksa koneksi atau coba qari lain.",
-        variant: "destructive",
-      });
+    if (!url) return;
+    noteGesture();
+    void playPrompt(url).then((ok) => {
+      if (!ok) {
+        toast({
+          title: "Audio tidak bisa diputar",
+          description: "Periksa koneksi atau coba qari lain.",
+          variant: "destructive",
+        });
+      }
     });
-  }, [promptAyah?.audio, toast]);
+  }, [noteGesture, playPrompt, promptAyah?.audio, toast]);
 
   const playAnswerAudio = useCallback(() => {
     const url = nextAyah?.audio;
@@ -287,6 +282,7 @@ const SambungAyat = () => {
   }, [nextAyah?.audio, toast]);
 
   const openAnswerDialog = useCallback(() => {
+    noteGesture();
     setHintDialogOpen(false);
     const url = nextAyah?.audio;
     if (url) {
@@ -302,7 +298,7 @@ const SambungAyat = () => {
       });
     }
     setRevealed(true);
-  }, [nextAyah?.audio, setRevealed, toast]);
+  }, [nextAyah?.audio, noteGesture, setRevealed, toast]);
 
   if (surahsLoading) {
     return (
@@ -318,8 +314,8 @@ const SambungAyat = () => {
         <Card className="max-w-md mx-auto shadow-peaceful">
           <CardContent className="p-6 space-y-4">
             <p className="text-destructive">Gagal memuat daftar surah.</p>
-            <Button variant="outline" onClick={() => navigate("/")}>
-              Kembali ke beranda
+            <Button variant="outline" onClick={() => navigate("/latihan")}>
+              Kembali ke Latihan
             </Button>
           </CardContent>
         </Card>
@@ -345,42 +341,37 @@ const SambungAyat = () => {
         aria-hidden
       />
       <div className="container mx-auto px-4 py-6 max-w-3xl space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="icon" asChild className="h-10 w-10">
-              <Link to="/" aria-label="Beranda">
-                <ArrowLeft className="h-4 w-4" />
-              </Link>
-            </Button>
-            <div className="flex items-center gap-2">
-              <div
-                className={cn(
-                  "h-10 w-10 rounded-full flex items-center justify-center shadow-lg",
-                  practiceStarted
-                    ? "bg-gradient-to-br from-islamic-gold to-amber-600 text-amber-950"
-                    : "bg-gradient-to-br from-primary to-primary-glow text-white"
-                )}
-              >
-                {practiceStarted ? (
-                  <Target className="h-5 w-5" />
-                ) : (
-                  <Sparkles className="h-5 w-5" />
-                )}
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-primary">
-                  #SambungAyat
-                </h1>
-                <p className="text-xs text-muted-foreground sm:text-sm">
-                  {practiceStarted
-                    ? "Mode kuis — sambung ayat berikutnya dalam satu surah"
-                    : "Latihan sambung ayat berikutnya dalam satu surah"}
-                </p>
-              </div>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="icon" asChild className="h-10 w-10">
+            <Link to="/latihan" aria-label="Kembali ke Latihan">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div className="flex items-center gap-2 min-w-0">
+            <div
+              className={cn(
+                "h-10 w-10 shrink-0 rounded-full flex items-center justify-center shadow-lg",
+                practiceStarted
+                  ? "bg-gradient-to-br from-islamic-gold to-amber-600 text-amber-950"
+                  : "bg-gradient-to-br from-primary to-primary-glow text-white"
+              )}
+            >
+              {practiceStarted ? (
+                <Target className="h-5 w-5" />
+              ) : (
+                <Sparkles className="h-5 w-5" />
+              )}
             </div>
-          </div>
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <ThemeToggle />
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-bold text-primary">
+                #SambungAyat
+              </h1>
+              <p className="text-xs text-muted-foreground sm:text-sm">
+                {practiceStarted
+                  ? "Mode kuis — sambung ayat berikutnya dalam satu surah"
+                  : "Latihan sambung ayat berikutnya dalam satu surah"}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -426,14 +417,12 @@ const SambungAyat = () => {
 
             <ReciterSelector showResetButton={false} />
 
-            <Button
-              className="w-full h-14 text-lg font-bold tracking-tight bg-gradient-to-r from-islamic-gold via-amber-400 to-islamic-gold text-amber-950 shadow-[0_0_24px_hsl(var(--islamic-gold)/0.35)] hover:brightness-105 hover:shadow-[0_0_32px_hsl(var(--islamic-gold)/0.45)] border-2 border-amber-200/80"
+            <StartLatihanButton
               onClick={startPractice}
               disabled={eligibleSelected.length === 0}
             >
-              <Shuffle className="h-5 w-5 mr-2" />
-              Mulai Latihan #SambungAyat
-            </Button>
+              Mulai #SambungAyat
+            </StartLatihanButton>
           </>
         ) : (
           <>
@@ -530,7 +519,21 @@ const SambungAyat = () => {
                     )}
                   </CardHeader>
                   <CardContent className="space-y-6 px-4 pb-8 sm:px-6">
-                    <audio ref={audioRef} className="hidden" preload="metadata" />
+                    <audio
+                      ref={audioRef}
+                      className="hidden"
+                      preload="auto"
+                      playsInline
+                    />
+
+                    {promptAudioBlocked && promptAyah.audio ? (
+                      <Alert className="border-amber-500/40 bg-amber-500/10">
+                        <AlertDescription className="text-sm">
+                          Audio soal tidak diputar otomatis di perangkat ini. Ketuk{" "}
+                          <span className="font-semibold text-foreground">Ulangi audio</span>.
+                        </AlertDescription>
+                      </Alert>
+                    ) : null}
 
                     <div
                       className={cn(
@@ -560,7 +563,10 @@ const SambungAyat = () => {
                           variant="secondary"
                           size="sm"
                           onClick={playPromptAudio}
-                          className="border font-semibold"
+                          className={cn(
+                            "border font-semibold",
+                            promptAudioBlocked && "ring-2 ring-amber-500 animate-pulse"
+                          )}
                         >
                           <RotateCcw className="h-4 w-4 mr-2" />
                           Ulangi audio

@@ -18,7 +18,6 @@ import {
 } from "@/lib/murajaahPlaylist";
 import { queryClient } from "@/lib/queryClient";
 import { combinedSurahQueryKey, SURAH_STALE_TIME } from "@/lib/surahQueryKeys";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { ReciterSelector } from "@/components/ReciterSelector";
 import { SurahMultiSelect } from "@/components/SurahMultiSelect";
 import { MurajaahPlayer } from "@/components/MurajaahPlayer";
@@ -201,7 +200,7 @@ const Murajaah = () => {
 
   if (surahsLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-islamic-green-light/10 to-background">
+      <div className="flex items-center justify-center py-24">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
       </div>
     );
@@ -209,12 +208,12 @@ const Murajaah = () => {
 
   if (surahsError || surahsMeta.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-islamic-green-light/10 to-background p-6">
-        <Card className="max-w-md mx-auto shadow-peaceful">
+      <div className="max-w-md mx-auto">
+        <Card className="shadow-peaceful">
           <CardContent className="p-6 space-y-4">
             <p className="text-destructive">Gagal memuat daftar surah.</p>
-            <Button variant="outline" onClick={() => navigate("/")}>
-              Kembali ke beranda
+            <Button variant="outline" onClick={() => navigate("/murajaah")}>
+              Kembali
             </Button>
           </CardContent>
         </Card>
@@ -225,37 +224,24 @@ const Murajaah = () => {
   return (
     <div
       className={cn(
-        "min-h-screen transition-colors duration-500",
-        sessionStarted
-          ? "bg-gradient-to-b from-primary/10 via-background to-background"
-          : "bg-gradient-to-br from-background via-islamic-green-light/10 to-background"
+        "max-w-3xl mx-auto space-y-6 transition-colors duration-500",
+        sessionStarted && "rounded-xl"
       )}
     >
-      <div className="container mx-auto px-4 py-6 max-w-3xl space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="icon" asChild className="h-10 w-10">
-              <Link to="/" aria-label="Beranda">
-                <ArrowLeft className="h-4 w-4" />
-              </Link>
-            </Button>
-            <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-full flex items-center justify-center shadow-lg bg-gradient-to-br from-primary to-primary-glow text-white">
-                <Headphones className="h-5 w-5" />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-primary">
-                  #Murajaah
-                </h1>
-                <p className="text-xs text-muted-foreground sm:text-sm">
-                  {sessionStarted
-                    ? "Putar berurutan ayat 1 sampai akhir surah pilihan (urut nomor surah)"
-                    : "Pilih surah dan qari, lalu dengarkan murajaah berurutan"}
-                </p>
-              </div>
-            </div>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="icon" asChild className="h-10 w-10">
+            <Link to="/murajaah" aria-label="Kembali ke Murajaah">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div>
+            <h1 className="text-xl font-bold text-primary">Murajaah Quran</h1>
+            <p className="text-xs text-muted-foreground sm:text-sm">
+              {sessionStarted
+                ? "Putar berurutan ayat 1 sampai akhir surah pilihan (urut nomor surah)"
+                : "Pilih surah dan qari, lalu dengarkan murajaah berurutan"}
+            </p>
           </div>
-          <ThemeToggle />
         </div>
 
         {showDisclaimerAlert && (
@@ -270,8 +256,8 @@ const Murajaah = () => {
             </button>
             <Info className="h-4 w-4" />
             <AlertDescription className="text-sm text-muted-foreground">
-              Murajaah Quran memutar semua ayat surah pilihan secara berurutan (nomor surah naik).
-              Berbeda dari mode Murajaah YouTube di beranda.
+              Memutar semua ayat surah pilihan secara berurutan (nomor surah naik). Untuk video
+              YouTube, gunakan Murajaah YouTube dari menu Murajaah.
             </AlertDescription>
           </Alert>
         )}
@@ -381,7 +367,6 @@ const Murajaah = () => {
             )}
           </>
         )}
-      </div>
     </div>
   );
 };

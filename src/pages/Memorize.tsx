@@ -29,12 +29,14 @@ const Memorize = () => {
     youtubeLinks
   } = useQuranStore();
 
+  const backPath = sessionMode === "youtube" ? "/murajaah/youtube" : "/";
+
   useEffect(() => {
     if (sessionMode === "quran" && (!selectedSurah || selectedAyahs.length === 0)) {
-      navigate('/');
+      navigate("/");
     }
     if (sessionMode === "youtube" && youtubeLinks.length === 0) {
-      navigate('/');
+      navigate("/murajaah/youtube");
     }
   }, [sessionMode, selectedSurah, selectedAyahs, youtubeLinks, navigate]);
 
@@ -77,7 +79,7 @@ const Memorize = () => {
             <Button 
               variant="outline" 
               size="icon"
-              onClick={() => navigate('/')}
+              onClick={() => navigate(backPath)}
               className="h-10 w-10"
             >
               <ArrowLeft className="h-4 w-4" />

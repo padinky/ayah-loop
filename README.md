@@ -1,14 +1,12 @@
-# Ayah Loop (Hafalan)
+# Hafalan Project
 
-Web app untuk membantu **mengulang dan menghafal Al-Qur'an**: loop audio per ayat, mode YouTube, dan tiga latihan tambahan.
+Web app untuk membantu **mengulang dan menghafal Al-Qur'an**, dengan tiga bagian utama:
 
 ## Fitur
 
-- **Mode Quran** — pilih surah, ayat, qari, pengulangan per ayat/blok; putar di halaman hafalan.
-- **Mode YouTube** — link dengan loop per video dan per sesi; playlist Ust. Hanif.
-- **#SambungAyat** — soal acak: sambung ayat berikutnya dalam satu surah.
-- **#SambungSurat** — akhir surah → awal surah berikutnya (urutan Mushaf).
-- **#Murajaah Quran** — putar semua ayat surah pilihan berurutan (nomor surah naik), dengan ulang sesi.
+- **Menghafal** — pilih surah, ayat, qari, pengulangan; sesi di `/memorize`.
+- **Murajaah** — dengarkan berurutan: **Quran** (API) atau **YouTube** (link + loop).
+- **Latihan** — #SambungAyat dan #SambungSurat (soal acak dari hafalan).
 
 Permintaan API diatur antrean agar menghindari error 429 saat banyak surah dipilih.
 

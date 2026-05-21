@@ -1,4 +1,4 @@
-# Ayah Loop (Hafalan) — Agent Context
+# Hafalan Project — Agent Context
 
 Indonesian-language web app that helps users **repeat and memorize Qur’an** via audio loops, optional YouTube clips, and practice drills (**Sambung Ayat**, **Sambung Surat**, **Murajaah**).
 
@@ -27,14 +27,19 @@ Path alias: `@/` → `src/` (see `vite.config.ts`).
 
 ## Routes (`src/App.tsx`)
 
+Shell: `AppLayout` — nav **Menghafal | Murajaah | Latihan** (+ Tentang, theme).
+
 | Path | Page | Purpose |
 |------|------|---------|
-| `/` | `Home.tsx` | Setup: surah/ayah/reciter or YouTube links |
-| `/memorize` | `Memorize.tsx` | Active memorization session |
-| `/sambung-ayat` | `SambungAyat.tsx` | Next ayah within same surah (quiz) |
-| `/sambung-surat` | `SambungSurat.tsx` | Last ayah of surah N → ayah 1 of surah N+1 |
-| `/murajaah` | `Murajaah.tsx` | Sequential playback of selected surahs |
-| `/about` | `About.tsx` | Credits, APIs, stack |
+| `/` | `Home.tsx` (`Menghafal`) | Pick surah/ayah/repeat → `/memorize` |
+| `/murajaah` | `MurajaahHub.tsx` | Choose Quran vs YouTube source |
+| `/murajaah/quran` | `Murajaah.tsx` | Sequential surah playback (API) |
+| `/murajaah/youtube` | `MurajaahYouTube.tsx` | YouTube link loop setup |
+| `/latihan` | `LatihanHub.tsx` | Links to Sambung modes |
+| `/sambung-ayat` | `SambungAyat.tsx` | Next ayah quiz |
+| `/sambung-surat` | `SambungSurat.tsx` | End surah → next surah ayah 1 |
+| `/memorize` | `Memorize.tsx` | Session (outside layout; quran or youtube) |
+| `/about` | `About.tsx` | Credits, APIs |
 | `*` | `NotFound.tsx` | 404 |
 
 ## Product flows
@@ -47,9 +52,12 @@ Path alias: `@/` → `src/` (see `vite.config.ts`).
 
 Default reciter: `ar.alafasy` in `quranStore`.
 
-### 2. YouTube loop (`sessionMode: 'youtube'`)
+### 2. Murajaah (`/murajaah`)
 
-`YouTubeSetupCard` + `YouTubeLoopPlayer`; curated `ustHanifPlaylist.ts`. Distinct from **Murajaah Quran** at `/murajaah`.
+Hub then:
+
+- **Quran** (`/murajaah/quran`) — `murajaahStore` + `MurajaahPlayer`
+- **YouTube** (`/murajaah/youtube`) — `YouTubeSetupCard` → `/memorize` with `sessionMode: 'youtube'` + `YouTubeLoopPlayer`; playlist `ustHanifPlaylist.ts`
 
 ### 3. Sambung Ayat (`/sambung-ayat`)
 
@@ -65,13 +73,9 @@ Store: `sambungSuratStore`. Logic: `src/lib/sambungSuratRound.ts`. Eligible: sel
 - Prompt = **last ayah** of surah N; answer = **ayah 1** of surah N+1 (Mushaf order).
 - Lazy fetch: surah N + N+1 per round through `surahFetchQueue`.
 
-### 5. Murajaah (`/murajaah`)
+### 3. Latihan (`/latihan`)
 
-Store: `murajaahStore`. Logic: `src/lib/murajaahPlaylist.ts`. Shares `useQuranStore.selectedReciter`.
-
-- User selects surahs + session loop count.
-- Playback: all ayahs from min to max selected surah number (ascending).
-- **Sequential load** via `queryClient.fetchQuery` + queue; play when first surah ready.
+Hub → `/sambung-ayat` or `/sambung-surat`. Stores: `sambungAyatStore`, `sambungSuratStore`.
 
 ## API rate limiting
 

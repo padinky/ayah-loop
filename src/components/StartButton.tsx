@@ -40,7 +40,7 @@ export const StartButton = () => {
             disabled={!canStart}
           >
             <Play className="h-5 w-5 mr-2" />
-            Mulai Sesi Pengulangan Youtube
+            Mulai Murajaah YouTube
           </Button>
         </CardContent>
       </Card>

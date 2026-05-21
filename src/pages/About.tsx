@@ -1,12 +1,7 @@
-import { ArrowLeft, Code, Heart, Mail, Globe, Database, Headphones } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Code, Heart, Mail, Globe, Database, Headphones } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
-import { ThemeToggle } from "../components/ThemeToggle";
-
 const About = () => {
-  const navigate = useNavigate();
 
   const technologies = [
     { name: "React", description: "Frontend library for building user interfaces" },
@@ -24,30 +19,12 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-islamic-green-light/10 to-background">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="outline" 
-              size="icon"
-              onClick={() => navigate('/')}
-              className="h-10 w-10"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                Tentang Aplikasi
-              </h1>
-              <p className="text-muted-foreground">
-                Informasi tentang proyek hafalan Al-Qur'an ini
-              </p>
-            </div>
-          </div>
-          <ThemeToggle />
+    <div className="max-w-4xl mx-auto space-y-8">
+        <div>
+          <h1 className="text-2xl font-bold text-primary">Tentang Aplikasi</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Informasi tentang proyek hafalan Al-Qur&apos;an ini
+          </p>
         </div>
 
         <div className="space-y-8">
@@ -187,7 +164,6 @@ const About = () => {
             </p>
           </div>
         </div>
-      </div>
     </div>
   );
 };
